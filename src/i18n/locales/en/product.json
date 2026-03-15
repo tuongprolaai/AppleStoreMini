@@ -1,0 +1,133 @@
+{
+    "page": {
+        "title": "Products",
+        "allProducts": "All products",
+        "searchResults": "Search results for",
+        "showing": "Showing",
+        "of": "of",
+        "results": "products"
+    },
+
+    "filter": {
+        "title": "Filters",
+        "category": "Category",
+        "allCategories": "All categories",
+        "priceRange": "Price range",
+        "minPrice": "Min price",
+        "maxPrice": "Max price",
+        "color": "Color",
+        "allColors": "All colors",
+        "storage": "Storage",
+        "allStorage": "All storage",
+        "availability": "Availability",
+        "inStock": "In stock",
+        "outOfStock": "Out of stock",
+        "apply": "Apply",
+        "reset": "Clear filters",
+        "close": "Close filters",
+        "active": "Active filters"
+    },
+
+    "sort": {
+        "label": "Sort by",
+        "featured": "Featured",
+        "newest": "Newest",
+        "priceAsc": "Price: low to high",
+        "priceDesc": "Price: high to low",
+        "bestSeller": "Best seller",
+        "rating": "Highest rated"
+    },
+
+    "detail": {
+        "selectColor": "Select color",
+        "selectedColor": "Selected color",
+        "selectStorage": "Select storage",
+        "selectedStorage": "Selected storage",
+        "quantity": "Quantity",
+        "addToCart": "Add to cart",
+        "buyNow": "Buy now",
+        "addToWishlist": "Add to wishlist",
+        "removeFromWishlist": "Remove from wishlist",
+        "outOfStock": "Currently out of stock",
+        "sku": "SKU",
+        "share": "Share",
+        "description": "Description",
+        "specification": "Specifications",
+        "reviews": "Reviews",
+        "relatedProducts": "Related products",
+        "addToCartSuccess": "Added to cart",
+        "selectOptions": "Please select color and storage"
+    },
+
+    "specification": {
+        "display": "Display",
+        "chip": "Chip",
+        "camera": "Camera",
+        "battery": "Battery",
+        "os": "Operating system",
+        "connectivity": "Connectivity",
+        "dimensions": "Dimensions",
+        "weight": "Weight",
+        "storage": "Storage",
+        "ram": "RAM",
+        "simCard": "SIM card",
+        "color": "Color"
+    },
+
+    "review": {
+        "title": "Customer reviews",
+        "average": "Average rating",
+        "total": "reviews",
+        "writeReview": "Write a review",
+        "yourRating": "Your rating",
+        "yourComment": "Your review",
+        "commentPlaceholder": "Share your experience with this product...",
+        "submitReview": "Submit review",
+        "submitting": "Submitting...",
+        "editReview": "Edit review",
+        "deleteReview": "Delete review",
+        "loginToReview": "Log in to write a review",
+        "purchaseToReview": "Purchase this product to write a review",
+        "alreadyReviewed": "You have already reviewed this product",
+        "helpful": "Helpful",
+        "notHelpful": "Not helpful",
+        "verifiedPurchase": "Verified purchase",
+        "success": "Your review has been submitted",
+        "deleteSuccess": "Review deleted",
+        "filterByRating": "Filter by rating",
+        "allRatings": "All",
+        "noReviews": "No reviews yet",
+        "noReviewsDesc": "Be the first to review this product",
+        "star": "star",
+        "stars": "stars"
+    },
+
+    "search": {
+        "placeholder": "Search products...",
+        "suggestions": "Suggestions",
+        "recent": "Recent searches",
+        "popular": "Popular searches",
+        "noResults": "No products found",
+        "noResultsDesc": "Try searching with a different keyword",
+        "viewAll": "View all results for",
+        "clear": "Clear"
+    },
+
+    "category": {
+        "iphone": "iPhone",
+        "ipad": "iPad",
+        "mac": "Mac",
+        "watch": "Apple Watch",
+        "airpods": "AirPods",
+        "accessories": "Accessories",
+        "all": "All"
+    },
+
+    "home": {
+        "featured": "Featured products",
+        "newest": "New arrivals",
+        "bestSeller": "Best sellers",
+        "shopByCategory": "Shop by category",
+        "discoverMore": "Discover more"
+    }
+}

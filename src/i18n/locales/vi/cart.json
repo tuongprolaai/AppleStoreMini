@@ -1,0 +1,54 @@
+{
+    "title": "Giỏ hàng",
+    "empty": "Giỏ hàng trống",
+    "emptyDesc": "Hãy thêm sản phẩm vào giỏ hàng của bạn",
+    "continueShopping": "Tiếp tục mua sắm",
+    "itemCount": "sản phẩm",
+
+    "item": {
+        "color": "Màu",
+        "storage": "Dung lượng",
+        "quantity": "Số lượng",
+        "price": "Đơn giá",
+        "total": "Thành tiền",
+        "remove": "Xoá",
+        "outOfStock": "Hết hàng"
+    },
+
+    "summary": {
+        "title": "Tóm tắt đơn hàng",
+        "subtotal": "Tạm tính",
+        "shipping": "Phí vận chuyển",
+        "freeShipping": "Miễn phí",
+        "discount": "Giảm giá",
+        "total": "Tổng cộng",
+        "vat": "Đã bao gồm VAT",
+        "checkout": "Tiến hành thanh toán",
+        "loginToCheckout": "Đăng nhập để thanh toán",
+        "freeShippingNote": "Miễn phí vận chuyển cho đơn hàng từ 500.000đ"
+    },
+
+    "drawer": {
+        "title": "Giỏ hàng của bạn",
+        "viewCart": "Xem giỏ hàng",
+        "checkout": "Thanh toán",
+        "close": "Đóng"
+    },
+
+    "coupon": {
+        "label": "Mã giảm giá",
+        "placeholder": "Nhập mã giảm giá",
+        "apply": "Áp dụng",
+        "remove": "Xoá mã",
+        "success": "Áp dụng mã giảm giá thành công",
+        "invalid": "Mã giảm giá không hợp lệ",
+        "expired": "Mã giảm giá đã hết hạn"
+    },
+
+    "toast": {
+        "addSuccess": "Đã thêm vào giỏ hàng",
+        "removeSuccess": "Đã xoá khỏi giỏ hàng",
+        "updateSuccess": "Đã cập nhật giỏ hàng",
+        "clearSuccess": "Đã xoá toàn bộ giỏ hàng"
+    }
+}

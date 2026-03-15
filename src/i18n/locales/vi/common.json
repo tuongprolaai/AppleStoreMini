@@ -1,0 +1,164 @@
+{
+    "appName": "Apple Store",
+    "welcome": "Chào mừng đến với Apple Store",
+
+    "nav": {
+        "home": "Trang chủ",
+        "products": "Sản phẩm",
+        "iphone": "iPhone",
+        "ipad": "iPad",
+        "mac": "Mac",
+        "watch": "Apple Watch",
+        "airpods": "AirPods",
+        "accessories": "Phụ kiện",
+        "cart": "Giỏ hàng",
+        "wishlist": "Yêu thích",
+        "search": "Tìm kiếm",
+        "profile": "Tài khoản",
+        "orders": "Đơn hàng",
+        "logout": "Đăng xuất",
+        "login": "Đăng nhập",
+        "register": "Đăng ký",
+        "admin": "Quản trị"
+    },
+
+    "btn": {
+        "buyNow": "Mua ngay",
+        "addToCart": "Thêm vào giỏ",
+        "addToWishlist": "Thêm vào yêu thích",
+        "removeFromWishlist": "Bỏ yêu thích",
+        "viewDetail": "Xem chi tiết",
+        "viewAll": "Xem tất cả",
+        "save": "Lưu",
+        "cancel": "Huỷ",
+        "confirm": "Xác nhận",
+        "delete": "Xoá",
+        "edit": "Chỉnh sửa",
+        "back": "Quay lại",
+        "next": "Tiếp theo",
+        "submit": "Gửi",
+        "search": "Tìm kiếm",
+        "filter": "Lọc",
+        "reset": "Đặt lại",
+        "close": "Đóng",
+        "learnMore": "Tìm hiểu thêm",
+        "continueShopping": "Tiếp tục mua sắm",
+        "goHome": "Về trang chủ",
+        "tryAgain": "Thử lại"
+    },
+
+    "theme": {
+        "label": "Giao diện",
+        "light": "Sáng",
+        "dark": "Tối",
+        "system": "Hệ thống"
+    },
+
+    "language": {
+        "label": "Ngôn ngữ",
+        "vi": "Tiếng Việt",
+        "en": "English"
+    },
+
+    "status": {
+        "loading": "Đang tải...",
+        "success": "Thành công",
+        "error": "Có lỗi xảy ra",
+        "empty": "Không có dữ liệu",
+        "notFound": "Không tìm thấy"
+    },
+
+    "price": {
+        "free": "Miễn phí",
+        "sale": "Giảm",
+        "original": "Giá gốc",
+        "current": "Giá hiện tại",
+        "total": "Tổng cộng",
+        "subtotal": "Tạm tính",
+        "shipping": "Phí vận chuyển",
+        "freeShipping": "Miễn phí vận chuyển",
+        "discount": "Giảm giá",
+        "tax": "Thuế"
+    },
+
+    "product": {
+        "new": "Mới",
+        "sale": "Giảm giá",
+        "outOfStock": "Hết hàng",
+        "inStock": "Còn hàng",
+        "featured": "Nổi bật",
+        "bestSeller": "Bán chạy",
+        "color": "Màu sắc",
+        "storage": "Dung lượng",
+        "quantity": "Số lượng",
+        "sku": "Mã sản phẩm",
+        "review": "đánh giá",
+        "noReview": "Chưa có đánh giá"
+    },
+
+    "empty": {
+        "cart": "Giỏ hàng trống",
+        "cartDesc": "Hãy thêm sản phẩm vào giỏ hàng của bạn",
+        "wishlist": "Chưa có sản phẩm yêu thích",
+        "wishlistDesc": "Lưu những sản phẩm bạn yêu thích để mua sau",
+        "orders": "Chưa có đơn hàng nào",
+        "ordersDesc": "Hãy mua sắm và đơn hàng sẽ xuất hiện ở đây",
+        "search": "Không tìm thấy kết quả",
+        "searchDesc": "Thử tìm kiếm với từ khoá khác",
+        "products": "Không có sản phẩm nào",
+        "productsDesc": "Thử thay đổi bộ lọc để xem thêm sản phẩm"
+    },
+
+    "confirm": {
+        "delete": "Bạn có chắc chắn muốn xoá không?",
+        "deleteDesc": "Hành động này không thể hoàn tác.",
+        "logout": "Bạn có chắc chắn muốn đăng xuất không?",
+        "cancelOrder": "Bạn có chắc chắn muốn huỷ đơn hàng này không?"
+    },
+
+    "toast": {
+        "addToCartSuccess": "Đã thêm vào giỏ hàng",
+        "removeFromCartSuccess": "Đã xoá khỏi giỏ hàng",
+        "addToWishlistSuccess": "Đã thêm vào yêu thích",
+        "removeFromWishlistSuccess": "Đã bỏ yêu thích",
+        "updateSuccess": "Cập nhật thành công",
+        "deleteSuccess": "Xoá thành công",
+        "saveSuccess": "Lưu thành công",
+        "error": "Có lỗi xảy ra, vui lòng thử lại",
+        "loginRequired": "Vui lòng đăng nhập để tiếp tục",
+        "sessionExpired": "Phiên đăng nhập hết hạn, vui lòng đăng nhập lại",
+        "copySuccess": "Đã sao chép"
+    },
+
+    "pagination": {
+        "prev": "Trước",
+        "next": "Sau",
+        "page": "Trang",
+        "of": "trong",
+        "total": "Tổng",
+        "results": "kết quả"
+    },
+
+    "footer": {
+        "shop": "Mua sắm",
+        "support": "Hỗ trợ",
+        "about": "Về chúng tôi",
+        "policy": "Chính sách",
+        "contact": "Liên hệ",
+        "warranty": "Chính sách bảo hành",
+        "return": "Chính sách đổi trả",
+        "privacy": "Chính sách bảo mật",
+        "terms": "Điều khoản sử dụng",
+        "copyright": "© 2024 Apple Store. Bảo lưu mọi quyền.",
+        "followUs": "Theo dõi chúng tôi"
+    },
+
+    "error": {
+        "notFound": "Trang không tồn tại",
+        "notFoundDesc": "Trang bạn đang tìm kiếm không tồn tại hoặc đã bị xoá.",
+        "serverError": "Lỗi máy chủ",
+        "serverErrorDesc": "Đã có lỗi xảy ra, vui lòng thử lại sau.",
+        "networkError": "Lỗi kết nối",
+        "networkErrorDesc": "Vui lòng kiểm tra kết nối internet của bạn."
+    }
+}

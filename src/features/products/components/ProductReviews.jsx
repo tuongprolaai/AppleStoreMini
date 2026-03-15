@@ -1,0 +1,186 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { MessageSquarePlus } from "lucide-react";
+import {
+    useGetReviewsQuery,
+    useDeleteReviewMutation,
+    useCheckPurchasedQuery,
+} from "@/store/api/reviewsApi";
+import { selectIsAuthenticated, selectCurrentUser } from "@/store/authSlice";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import ProductReviewSummary from "./ProductReviewSummary";
+import ProductReviewItem from "./ProductReviewItem";
+import ReviewForm from "./ReviewForm";
+import ConfirmDialog from "@/components/shared/ConfirmDialog";
+import { toast } from "sonner";
+
+export default function ProductReviews({ product }) {
+    const { t } = useTranslation("product");
+    const isAuthenticated = useSelector(selectIsAuthenticated);
+
+    const [showForm, setShowForm] = useState(false);
+    const [editingReview, setEditingReview] = useState(null);
+    const [deleteId, setDeleteId] = useState(null);
+    const [page, setPage] = useState(1);
+
+    const { data, isLoading } = useGetReviewsQuery({
+        productId: product.id,
+        params: { page, limit: 5 },
+    });
+    const { data: purchasedData } = useCheckPurchasedQuery(product.id, {
+        skip: !isAuthenticated,
+    });
+    const [deleteReview, { isLoading: isDeleting }] = useDeleteReviewMutation();
+
+    const reviews = data?.data || [];
+    const pagination = data?.pagination || {};
+    const isPurchased = purchasedData?.data?.isPurchased || false;
+
+    const handleEdit = (review) => {
+        setEditingReview(review);
+        setShowForm(true);
+    };
+
+    const handleDelete = async () => {
+        try {
+            await deleteReview(deleteId).unwrap();
+            toast.success(t("review.deleteSuccess"));
+        } catch {
+            toast.error(t("status.error", { ns: "common" }));
+        } finally {
+            setDeleteId(null);
+        }
+    };
+
+    const handleFormSuccess = () => {
+        setShowForm(false);
+        setEditingReview(null);
+    };
+
+    return (
+        <div className="space-y-6">
+            <h2 className="text-xl font-semibold text-foreground">
+                {t("review.title")}
+            </h2>
+
+            {/* Summary */}
+            {product.rating > 0 && (
+                <>
+                    <ProductReviewSummary
+                        rating={product.rating}
+                        reviewCount={product.reviewCount}
+                        distribution={product.ratingDistribution || {}}
+                    />
+                    <Separator />
+                </>
+            )}
+
+            {/* Write review button */}
+            {isAuthenticated && isPurchased && !showForm && (
+                <Button
+                    variant="outline"
+                    className="rounded-full"
+                    onClick={() => setShowForm(true)}
+                >
+                    <MessageSquarePlus className="mr-2 h-4 w-4" />
+                    {t("review.writeReview")}
+                </Button>
+            )}
+
+            {/* Review form */}
+            {showForm && (
+                <ReviewForm
+                    productId={product.id}
+                    review={editingReview}
+                    onSuccess={handleFormSuccess}
+                    onCancel={() => {
+                        setShowForm(false);
+                        setEditingReview(null);
+                    }}
+                />
+            )}
+
+            {/* Reviews list */}
+            {isLoading ? (
+                <div className="space-y-6">
+                    {[...Array(3)].map((_, i) => (
+                        <div key={i} className="space-y-3">
+                            <div className="flex items-center gap-3">
+                                <Skeleton className="h-9 w-9 rounded-full" />
+                                <div className="space-y-1.5">
+                                    <Skeleton className="h-4 w-28" />
+                                    <Skeleton className="h-3 w-20" />
+                                </div>
+                            </div>
+                            <Skeleton className="h-16 w-full" />
+                        </div>
+                    ))}
+                </div>
+            ) : reviews.length === 0 ? (
+                <div className="py-10 text-center">
+                    <p className="text-sm font-medium text-foreground">
+                        {t("review.noReviews")}
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                        {t("review.noReviewsDesc")}
+                    </p>
+                </div>
+            ) : (
+                <div className="space-y-6">
+                    {reviews.map((review, index) => (
+                        <div key={review.id}>
+                            <ProductReviewItem
+                                review={review}
+                                onEdit={handleEdit}
+                                onDelete={setDeleteId}
+                            />
+                            {index < reviews.length - 1 && (
+                                <Separator className="mt-6" />
+                            )}
+                        </div>
+                    ))}
+
+                    {/* Pagination */}
+                    {pagination.totalPages > 1 && (
+                        <div className="flex items-center justify-center gap-2 pt-4">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="rounded-full"
+                                disabled={page <= 1}
+                                onClick={() => setPage((p) => p - 1)}
+                            >
+                                {t("pagination.prev", { ns: "common" })}
+                            </Button>
+                            <span className="text-sm text-muted-foreground">
+                                {page} / {pagination.totalPages}
+                            </span>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className="rounded-full"
+                                disabled={page >= pagination.totalPages}
+                                onClick={() => setPage((p) => p + 1)}
+                            >
+                                {t("pagination.next", { ns: "common" })}
+                            </Button>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Confirm delete */}
+            <ConfirmDialog
+                open={!!deleteId}
+                onOpenChange={(open) => !open && setDeleteId(null)}
+                title={t("review.deleteReview")}
+                description={t("confirm.deleteDesc", { ns: "common" })}
+                onConfirm={handleDelete}
+                isLoading={isDeleting}
+            />
+        </div>
+    );
+}

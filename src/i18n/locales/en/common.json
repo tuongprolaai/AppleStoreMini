@@ -1,0 +1,164 @@
+{
+    "appName": "Apple Store",
+    "welcome": "Welcome to Apple Store",
+
+    "nav": {
+        "home": "Home",
+        "products": "Products",
+        "iphone": "iPhone",
+        "ipad": "iPad",
+        "mac": "Mac",
+        "watch": "Apple Watch",
+        "airpods": "AirPods",
+        "accessories": "Accessories",
+        "cart": "Cart",
+        "wishlist": "Wishlist",
+        "search": "Search",
+        "profile": "Account",
+        "orders": "Orders",
+        "logout": "Log out",
+        "login": "Log in",
+        "register": "Sign up",
+        "admin": "Admin"
+    },
+
+    "btn": {
+        "buyNow": "Buy now",
+        "addToCart": "Add to cart",
+        "addToWishlist": "Add to wishlist",
+        "removeFromWishlist": "Remove from wishlist",
+        "viewDetail": "View details",
+        "viewAll": "View all",
+        "save": "Save",
+        "cancel": "Cancel",
+        "confirm": "Confirm",
+        "delete": "Delete",
+        "edit": "Edit",
+        "back": "Back",
+        "next": "Next",
+        "submit": "Submit",
+        "search": "Search",
+        "filter": "Filter",
+        "reset": "Reset",
+        "close": "Close",
+        "learnMore": "Learn more",
+        "continueShopping": "Continue shopping",
+        "goHome": "Go home",
+        "tryAgain": "Try again"
+    },
+
+    "theme": {
+        "label": "Theme",
+        "light": "Light",
+        "dark": "Dark",
+        "system": "System"
+    },
+
+    "language": {
+        "label": "Language",
+        "vi": "Tiếng Việt",
+        "en": "English"
+    },
+
+    "status": {
+        "loading": "Loading...",
+        "success": "Success",
+        "error": "Something went wrong",
+        "empty": "No data available",
+        "notFound": "Not found"
+    },
+
+    "price": {
+        "free": "Free",
+        "sale": "Sale",
+        "original": "Original price",
+        "current": "Current price",
+        "total": "Total",
+        "subtotal": "Subtotal",
+        "shipping": "Shipping",
+        "freeShipping": "Free shipping",
+        "discount": "Discount",
+        "tax": "Tax"
+    },
+
+    "product": {
+        "new": "New",
+        "sale": "Sale",
+        "outOfStock": "Out of stock",
+        "inStock": "In stock",
+        "featured": "Featured",
+        "bestSeller": "Best seller",
+        "color": "Color",
+        "storage": "Storage",
+        "quantity": "Quantity",
+        "sku": "SKU",
+        "review": "reviews",
+        "noReview": "No reviews yet"
+    },
+
+    "empty": {
+        "cart": "Your cart is empty",
+        "cartDesc": "Add some products to your cart",
+        "wishlist": "Your wishlist is empty",
+        "wishlistDesc": "Save products you love to buy later",
+        "orders": "No orders yet",
+        "ordersDesc": "Shop now and your orders will appear here",
+        "search": "No results found",
+        "searchDesc": "Try searching with a different keyword",
+        "products": "No products found",
+        "productsDesc": "Try adjusting your filters to see more products"
+    },
+
+    "confirm": {
+        "delete": "Are you sure you want to delete this?",
+        "deleteDesc": "This action cannot be undone.",
+        "logout": "Are you sure you want to log out?",
+        "cancelOrder": "Are you sure you want to cancel this order?"
+    },
+
+    "toast": {
+        "addToCartSuccess": "Added to cart",
+        "removeFromCartSuccess": "Removed from cart",
+        "addToWishlistSuccess": "Added to wishlist",
+        "removeFromWishlistSuccess": "Removed from wishlist",
+        "updateSuccess": "Updated successfully",
+        "deleteSuccess": "Deleted successfully",
+        "saveSuccess": "Saved successfully",
+        "error": "Something went wrong, please try again",
+        "loginRequired": "Please log in to continue",
+        "sessionExpired": "Session expired, please log in again",
+        "copySuccess": "Copied to clipboard"
+    },
+
+    "pagination": {
+        "prev": "Previous",
+        "next": "Next",
+        "page": "Page",
+        "of": "of",
+        "total": "Total",
+        "results": "results"
+    },
+
+    "footer": {
+        "shop": "Shop",
+        "support": "Support",
+        "about": "About us",
+        "policy": "Policies",
+        "contact": "Contact",
+        "warranty": "Warranty policy",
+        "return": "Return policy",
+        "privacy": "Privacy policy",
+        "terms": "Terms of use",
+        "copyright": "© 2024 Apple Store. All rights reserved.",
+        "followUs": "Follow us"
+    },
+
+    "error": {
+        "notFound": "Page not found",
+        "notFoundDesc": "The page you are looking for does not exist or has been removed.",
+        "serverError": "Server error",
+        "serverErrorDesc": "Something went wrong, please try again later.",
+        "networkError": "Network error",
+        "networkErrorDesc": "Please check your internet connection."
+    }
+}

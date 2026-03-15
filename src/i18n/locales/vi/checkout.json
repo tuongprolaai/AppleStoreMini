@@ -1,0 +1,88 @@
+{
+    "title": "Thanh toán",
+
+    "steps": {
+        "address": "Địa chỉ",
+        "payment": "Thanh toán",
+        "confirm": "Xác nhận"
+    },
+
+    "address": {
+        "title": "Địa chỉ giao hàng",
+        "savedAddresses": "Địa chỉ đã lưu",
+        "useThisAddress": "Dùng địa chỉ này",
+        "addNewAddress": "Thêm địa chỉ mới",
+        "fullName": "Họ và tên",
+        "fullNamePlaceholder": "Nhập họ và tên người nhận",
+        "phone": "Số điện thoại",
+        "phonePlaceholder": "Nhập số điện thoại",
+        "province": "Tỉnh / Thành phố",
+        "provincePlaceholder": "Chọn tỉnh / thành phố",
+        "district": "Quận / Huyện",
+        "districtPlaceholder": "Chọn quận / huyện",
+        "ward": "Phường / Xã",
+        "wardPlaceholder": "Chọn phường / xã",
+        "address": "Địa chỉ cụ thể",
+        "addressPlaceholder": "Số nhà, tên đường...",
+        "saveAddress": "Lưu địa chỉ này",
+        "setDefault": "Đặt làm địa chỉ mặc định",
+        "continue": "Tiếp tục",
+        "note": "Ghi chú",
+        "notePlaceholder": "Ghi chú cho đơn hàng (tuỳ chọn)"
+    },
+
+    "payment": {
+        "title": "Phương thức thanh toán",
+        "vnpay": "VNPay",
+        "vnpayDesc": "Thanh toán qua cổng VNPay",
+        "momo": "MoMo",
+        "momoDesc": "Thanh toán qua ví MoMo",
+        "zalopay": "ZaloPay",
+        "zalopayDesc": "Thanh toán qua ví ZaloPay",
+        "cod": "Thanh toán khi nhận hàng",
+        "codDesc": "Trả tiền mặt khi nhận hàng",
+        "bankTransfer": "Chuyển khoản ngân hàng",
+        "bankTransferDesc": "Chuyển khoản trực tiếp vào tài khoản",
+        "selectMethod": "Vui lòng chọn phương thức thanh toán",
+        "continue": "Tiếp tục",
+        "back": "Quay lại",
+        "secure": "Thanh toán được bảo mật và mã hoá"
+    },
+
+    "confirm": {
+        "title": "Xác nhận đơn hàng",
+        "orderItems": "Sản phẩm đặt hàng",
+        "shippingAddress": "Địa chỉ giao hàng",
+        "paymentMethod": "Phương thức thanh toán",
+        "orderSummary": "Tóm tắt đơn hàng",
+        "subtotal": "Tạm tính",
+        "shipping": "Phí vận chuyển",
+        "freeShipping": "Miễn phí",
+        "discount": "Giảm giá",
+        "total": "Tổng cộng",
+        "placeOrder": "Đặt hàng",
+        "placing": "Đang đặt hàng...",
+        "back": "Quay lại",
+        "agreeTerms": "Bằng cách đặt hàng, bạn đồng ý với",
+        "terms": "Điều khoản sử dụng",
+        "and": "và",
+        "privacy": "Chính sách bảo mật"
+    },
+
+    "success": {
+        "title": "Đặt hàng thành công!",
+        "subtitle": "Cảm ơn bạn đã mua hàng",
+        "orderCode": "Mã đơn hàng",
+        "orderInfo": "Thông tin đơn hàng đã được gửi đến email của bạn",
+        "estimatedDelivery": "Dự kiến giao hàng",
+        "trackOrder": "Theo dõi đơn hàng",
+        "continueShopping": "Tiếp tục mua sắm",
+        "days": "ngày làm việc"
+    },
+
+    "error": {
+        "placeOrderFailed": "Đặt hàng thất bại, vui lòng thử lại",
+        "paymentFailed": "Thanh toán thất bại",
+        "outOfStock": "Một số sản phẩm trong giỏ hàng đã hết hàng"
+    }
+}
