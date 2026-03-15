@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useUploadAvatarMutation } from "@/store/api/usersApi";
 import { useDispatch } from "react-redux";
-import { setUser } from "@/store/authSlice";
+import { setCredentials } from "@/store/authSlice";
 import { IMAGE } from "@/lib/constants";
 
 export default function AvatarUpload({ user }) {
@@ -44,7 +44,7 @@ export default function AvatarUpload({ user }) {
             const formData = new FormData();
             formData.append("avatar", file);
             const response = await uploadAvatar(formData).unwrap();
-            dispatch(setUser(response.data));
+            dispatch(setCredentials(response.data));
             toast.success(t("avatar.uploadSuccess"));
         } catch {
             setPreview(null);

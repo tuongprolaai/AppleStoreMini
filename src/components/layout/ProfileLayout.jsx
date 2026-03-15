@@ -1,14 +1,51 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ChevronRight, Home } from "lucide-react";
 import ProfileSidebar from "./profile/ProfileSidebar";
+
+const BREADCRUMB_MAP = {
+    "/profile": "sidebar.profile",
+    "/profile/orders": "sidebar.orders",
+    "/profile/addresses": "sidebar.addresses",
+    "/profile/change-password": "sidebar.changePassword",
+    "/wishlist": "sidebar.wishlist",
+};
 
 export default function ProfileLayout() {
     const { t } = useTranslation("profile");
+    const { pathname } = useLocation();
+
+    const isOrderDetail = /^\/profile\/orders\/.+/.test(pathname);
+    const currentLabel = isOrderDetail
+        ? t("sidebar.orders")
+        : t(BREADCRUMB_MAP[pathname] || "sidebar.profile");
 
     return (
         <div className="mx-auto max-w-6xl px-4 py-8 md:py-12">
-            <div className="flex flex-col gap-6 md:flex-row md:gap-8">
-                {/* ── Sidebar — desktop luôn hiện ── */}
+            {/* ── Breadcrumb ── */}
+            <nav className="mb-6 flex items-center gap-1.5 text-sm">
+                <Link
+                    to="/"
+                    className="flex items-center text-muted-foreground transition-colors hover:text-foreground"
+                >
+                    <Home className="h-3.5 w-3.5" />
+                </Link>
+                <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                <span className="font-medium text-foreground">
+                    {currentLabel}
+                </span>
+                {isOrderDetail && (
+                    <>
+                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="font-medium text-foreground">
+                            {t("detail.title", { ns: "order" })}
+                        </span>
+                    </>
+                )}
+            </nav>
+
+            <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-8">
+                {/* ── Sidebar ── */}
                 <aside className="w-full shrink-0 md:w-64">
                     <ProfileSidebar />
                 </aside>

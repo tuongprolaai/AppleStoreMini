@@ -12,11 +12,9 @@ import {
     useDeleteAddressMutation,
     useSetDefaultAddressMutation,
 } from "@/store/api/usersApi";
-import { useToast } from "@/components/ui/use-toast";
-
+import { toast } from "sonner";
 export default function AddressBook() {
     const { t } = useTranslation("profile");
-    const { toast } = useToast();
     const [formOpen, setFormOpen] = useState(false);
     const [editingAddress, setEditingAddress] = useState(null);
 
@@ -41,24 +39,22 @@ export default function AddressBook() {
     const handleDelete = async (id) => {
         try {
             await deleteAddress(id).unwrap();
-            toast({ title: t("address.deleteSuccess") });
-        } catch {
-            toast({
-                title: t("status.error", { ns: "common" }),
-                variant: "destructive",
-            });
+            toast.success(t("address.deleteSuccess"));
+        } catch (err) {
+            toast.error(
+                err?.data?.message || t("status.error", { ns: "common" }),
+            );
         }
     };
 
     const handleSetDefault = async (id) => {
         try {
             await setDefault(id).unwrap();
-            toast({ title: t("address.setDefaultSuccess") });
-        } catch {
-            toast({
-                title: t("status.error", { ns: "common" }),
-                variant: "destructive",
-            });
+            toast.success(t("address.setDefaultSuccess"));
+        } catch (err) {
+            toast.error(
+                err?.data?.message || t("status.error", { ns: "common" }),
+            );
         }
     };
 

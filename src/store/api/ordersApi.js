@@ -2,100 +2,61 @@ import { baseApi } from "./baseApi";
 
 export const ordersApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // ── User endpoints ────────────────────────────────
-
-        // Lấy danh sách đơn hàng của user hiện tại
         getOrders: builder.query({
-            query: (params) => ({
-                url: "/orders",
-                params: {
-                    page: params?.page || 1,
-                    limit: params?.limit || 10,
-                    status: params?.status,
-                },
-            }),
-            providesTags: ["OrderList"],
+            query: (params) => ({ url: "/orders", params }),
+            providesTags: ["Orders"],
         }),
 
-        // Lấy chi tiết 1 đơn hàng
         getOrderById: builder.query({
             query: (id) => `/orders/${id}`,
-            providesTags: (result, error, id) => [{ type: "Order", id }],
+            providesTags: (_, __, id) => [{ type: "Order", id }],
         }),
 
-        // Tạo đơn hàng mới
         createOrder: builder.mutation({
             query: (data) => ({
                 url: "/orders",
                 method: "POST",
                 body: data,
-                // data gồm: items[], shippingAddress, paymentMethod
             }),
-            invalidatesTags: ["OrderList", "Cart"],
+            invalidatesTags: ["Orders", "Cart"],
         }),
 
-        // Huỷ đơn hàng
         cancelOrder: builder.mutation({
             query: ({ id, reason }) => ({
                 url: `/orders/${id}/cancel`,
-                method: "PUT",
+                method: "POST",
                 body: { reason },
             }),
-            invalidatesTags: (result, error, { id }) => [
-                { type: "Order", id },
-                "OrderList",
-            ],
+            invalidatesTags: ["Orders", "Order"],
         }),
 
-        // Xác nhận đã nhận hàng
         confirmDelivered: builder.mutation({
             query: (id) => ({
-                url: `/orders/${id}/confirm`,
-                method: "PUT",
+                url: `/orders/${id}/confirm-delivered`,
+                method: "POST",
             }),
-            invalidatesTags: (result, error, id) => [
-                { type: "Order", id },
-                "OrderList",
-            ],
+            invalidatesTags: ["Orders", "Order"],
         }),
 
-        // ── Admin endpoints ───────────────────────────────
-
-        // Lấy tất cả đơn hàng — chỉ admin
+        // ── Admin ──────────────────────────────────────
         getAllOrders: builder.query({
-            query: (params) => ({
-                url: "/admin/orders",
-                params: {
-                    page: params?.page || 1,
-                    limit: params?.limit || 10,
-                    status: params?.status,
-                    search: params?.search,
-                },
-            }),
-            providesTags: ["OrderList"],
+            query: (params) => ({ url: "/admin/orders", params }),
+            providesTags: ["Orders"],
         }),
 
-        // Cập nhật trạng thái đơn hàng — chỉ admin
         updateOrderStatus: builder.mutation({
-            query: ({ id, status }) => ({
+            query: ({ id, status, note }) => ({
                 url: `/admin/orders/${id}/status`,
-                method: "PUT",
-                body: { status },
+                method: "PATCH",
+                body: { status, note },
             }),
-            invalidatesTags: (result, error, { id }) => [
-                { type: "Order", id },
-                "OrderList",
-            ],
+            invalidatesTags: ["Orders", "Order"],
         }),
 
-        // Thống kê doanh thu — chỉ admin
         getRevenueStats: builder.query({
             query: (params) => ({
-                url: "/admin/orders/stats",
-                params: {
-                    period: params?.period || "month", // day, week, month, year
-                    year: params?.year,
-                },
+                url: "/admin/dashboard/revenue",
+                params,
             }),
         }),
     }),

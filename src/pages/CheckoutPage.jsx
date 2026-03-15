@@ -64,7 +64,7 @@ export default function CheckoutPage() {
                 addressId: checkoutData.addressId,
                 paymentMethod: checkoutData.paymentMethod,
                 items: items.map((item) => ({
-                    productId: item.product.id,
+                    productId: item.product._id || item.product.id,
                     quantity: item.quantity,
                     selectedColor: item.selectedColor,
                     selectedStorage: item.selectedStorage,

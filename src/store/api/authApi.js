@@ -1,4 +1,5 @@
 import { baseApi } from "./baseApi";
+import { setCredentials, logout } from "../authSlice";
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -6,16 +7,28 @@ export const authApi = baseApi.injectEndpoints({
             query: (credentials) => ({
                 url: "/auth/login",
                 method: "POST",
-                body: credentials, // { email, password }
+                body: credentials,
             }),
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(setCredentials(data.data));
+                } catch {}
+            },
         }),
 
         register: builder.mutation({
-            query: (userData) => ({
+            query: (data) => ({
                 url: "/auth/register",
                 method: "POST",
-                body: userData,
+                body: data,
             }),
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(setCredentials(data.data));
+                } catch {}
+            },
         }),
 
         logout: builder.mutation({
@@ -23,50 +36,55 @@ export const authApi = baseApi.injectEndpoints({
                 url: "/auth/logout",
                 method: "POST",
             }),
-            invalidatesTags: ["User", "Cart", "Order"],
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                } finally {
+                    dispatch(logout());
+                }
+            },
         }),
 
         getMe: builder.query({
             query: () => "/auth/me",
             providesTags: ["Profile"],
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(setCredentials({ user: data.data }));
+                } catch {}
+            },
+        }),
+
+        refreshToken: builder.mutation({
+            query: (refreshToken) => ({
+                url: "/auth/refresh-token",
+                method: "POST",
+                body: { refreshToken },
+            }),
         }),
 
         forgotPassword: builder.mutation({
-            query: (email) => ({
+            query: (data) => ({
                 url: "/auth/forgot-password",
                 method: "POST",
-                body: { email },
+                body: data,
             }),
         }),
 
         resetPassword: builder.mutation({
-            query: ({ token, password }) => ({
-                url: `/auth/reset-password/${token}`,
+            query: (data) => ({
+                url: "/auth/reset-password",
                 method: "POST",
-                body: { password },
+                body: data,
             }),
         }),
 
         changePassword: builder.mutation({
             query: (data) => ({
                 url: "/auth/change-password",
-                method: "PUT",
-                body: data, // { currentPassword, newPassword }
-            }),
-        }),
-
-        loginWithGoogle: builder.mutation({
-            query: (tokenId) => ({
-                url: "/auth/google",
                 method: "POST",
-                body: { tokenId },
-            }),
-        }),
-
-        refreshToken: builder.mutation({
-            query: () => ({
-                url: "/auth/refresh-token",
-                method: "POST",
+                body: data,
             }),
         }),
     }),
@@ -80,6 +98,4 @@ export const {
     useForgotPasswordMutation,
     useResetPasswordMutation,
     useChangePasswordMutation,
-    useLoginWithGoogleMutation,
-    useRefreshTokenMutation,
 } = authApi;

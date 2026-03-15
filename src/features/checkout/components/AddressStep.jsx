@@ -54,7 +54,7 @@ export default function AddressStep({ defaultData, onNext }) {
         if (addresses.length > 0 && !selectedAddressId) {
             const defaultAddr =
                 addresses.find((a) => a.isDefault) || addresses[0];
-            setSelectedAddressId(defaultAddr.id);
+            setSelectedAddressId(defaultAddr._id || defaultAddr.id);
         }
     }, [addresses]);
 
@@ -66,13 +66,15 @@ export default function AddressStep({ defaultData, onNext }) {
     }, [isAuthenticated, addresses]);
 
     const handleSelectAddress = (address) => {
-        setSelectedAddressId(address.id);
+        setSelectedAddressId(address._id || address.id);
         setShowNewForm(false);
     };
 
     const handleNext = () => {
         if (selectedAddressId && !showNewForm) {
-            const address = addresses.find((a) => a.id === selectedAddressId);
+            const address = addresses.find(
+                (a) => (a._id || a.id) === selectedAddressId,
+            );
             onNext({ addressId: selectedAddressId, address });
             return;
         }

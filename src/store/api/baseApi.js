@@ -1,37 +1,52 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { logout, setCredentials } from "../authSlice";
+
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 const baseQuery = fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+    baseUrl: BASE_URL,
     prepareHeaders: (headers, { getState }) => {
         const token = getState().auth.accessToken;
         if (token) {
-            headers.set("authorization", `Bearer ${token}`);
+            headers.set("Authorization", `Bearer ${token}`);
         }
         return headers;
     },
 });
 
-// Bọc thêm logic refresh token tự động khi gặp lỗi 401
+// Auto refresh token khi nhận 401
 const baseQueryWithReauth = async (args, api, extraOptions) => {
     let result = await baseQuery(args, api, extraOptions);
 
-    if (result?.error?.status === 401) {
-        // Thử gọi refresh token
-        const refreshResult = await baseQuery(
-            { url: "/auth/refresh-token", method: "POST" },
-            api,
-            extraOptions,
-        );
+    if (result.error?.status === 401) {
+        const refreshToken = api.getState().auth.refreshToken;
 
-        if (refreshResult?.data) {
-            // Lưu token mới vào store
-            api.dispatch(setCredentials(refreshResult.data));
-            // Gọi lại request ban đầu với token mới
-            result = await baseQuery(args, api, extraOptions);
+        if (refreshToken) {
+            const refreshResult = await baseQuery(
+                {
+                    url: "/auth/refresh-token",
+                    method: "POST",
+                    body: { refreshToken },
+                },
+                api,
+                extraOptions,
+            );
+
+            if (refreshResult.data) {
+                const { accessToken, refreshToken: newRefreshToken } =
+                    refreshResult.data.data;
+
+                api.dispatch({
+                    type: "auth/setCredentials",
+                    payload: { accessToken, refreshToken: newRefreshToken },
+                });
+
+                // Retry request gốc với token mới
+                result = await baseQuery(args, api, extraOptions);
+            } else {
+                api.dispatch({ type: "auth/logout" });
+            }
         } else {
-            // Refresh token cũng hết hạn — logout
-            api.dispatch(logout());
+            api.dispatch({ type: "auth/logout" });
         }
     }
 
@@ -39,19 +54,19 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
 };
 
 export const baseApi = createApi({
-    reducerPath: "baseApi",
+    reducerPath: "api",
     baseQuery: baseQueryWithReauth,
     tagTypes: [
+        "Products",
         "Product",
-        "ProductList",
+        "Orders",
         "Order",
-        "OrderList",
+        "Users",
         "User",
-        "UserList",
+        "Reviews",
         "Cart",
-        "Review",
-        "Wishlist",
         "Profile",
+        "Addresses",
     ],
     endpoints: () => ({}),
 });

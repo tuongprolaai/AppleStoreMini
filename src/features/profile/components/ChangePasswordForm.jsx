@@ -16,7 +16,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 const PasswordInput = ({ field, placeholder, disabled }) => {
     const [show, setShow] = useState(false);
@@ -47,7 +47,6 @@ const PasswordInput = ({ field, placeholder, disabled }) => {
 
 export default function ChangePasswordForm() {
     const { t } = useTranslation("profile");
-    const { toast } = useToast();
     const [changePassword, { isLoading }] = useChangePasswordMutation();
     const [serverError, setServerError] = useState("");
 
@@ -68,7 +67,7 @@ export default function ChangePasswordForm() {
                 newPassword: values.newPassword,
             }).unwrap();
 
-            toast({ title: t("changePassword.success") });
+            toast.success(t("changePassword.success"));
             form.reset();
         } catch (error) {
             const msg = error?.data?.message;

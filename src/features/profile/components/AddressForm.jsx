@@ -19,11 +19,10 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 
 export default function AddressForm({ address, onClose }) {
     const { t } = useTranslation("profile");
-    const { toast } = useToast();
     const isEditing = !!address;
 
     const [addAddress, { isLoading: isAdding }] = useAddAddressMutation();
@@ -62,18 +61,18 @@ export default function AddressForm({ address, onClose }) {
     const onSubmit = async (values) => {
         try {
             if (isEditing) {
-                await updateAddress({ id: address.id, ...values }).unwrap();
-                toast({ title: t("address.updateSuccess") });
+                await updateAddress({
+                    addressId: address._id || address.id,
+                    ...values,
+                }).unwrap();
+                toast.success(t("address.updateSuccess"));
             } else {
                 await addAddress(values).unwrap();
-                toast({ title: t("address.addSuccess") });
+                toast.success(t("address.addSuccess"));
             }
             onClose();
         } catch {
-            toast({
-                title: t("status.error", { ns: "common" }),
-                variant: "destructive",
-            });
+            toast.error(t("status.error", { ns: "common" }));
         }
     };
 

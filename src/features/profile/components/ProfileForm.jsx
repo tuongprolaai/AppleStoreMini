@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
 import { useUpdateProfileMutation } from "@/store/api/usersApi";
-import { setUser } from "@/store/authSlice";
+import { setCredentials } from "@/store/authSlice";
 import { profileSchema } from "@/lib/validations";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,7 +56,7 @@ export default function ProfileForm({ user }) {
     const onSubmit = async (values) => {
         try {
             const response = await updateProfile(values).unwrap();
-            dispatch(setUser(response.data));
+            dispatch(setCredentials(response.data));
 
             toast.success(t("info.saveSuccess"), {
                 description: tCommon("toast.updateSuccess"),

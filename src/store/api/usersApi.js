@@ -1,148 +1,117 @@
 import { baseApi } from "./baseApi";
+import { updateUser } from "../authSlice";
 
 export const usersApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // ── User endpoints ────────────────────────────────
-
-        // Lấy thông tin profile của mình
         getProfile: builder.query({
             query: () => "/users/profile",
             providesTags: ["Profile"],
         }),
 
-        // Cập nhật thông tin profile
         updateProfile: builder.mutation({
             query: (data) => ({
                 url: "/users/profile",
                 method: "PUT",
                 body: data,
-                // data gồm: name, phone, birthday, gender
             }),
             invalidatesTags: ["Profile"],
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(updateUser(data.data));
+                } catch {}
+            },
         }),
 
-        // Upload avatar
         uploadAvatar: builder.mutation({
             query: (formData) => ({
-                url: "/users/profile/avatar",
+                url: "/users/avatar",
                 method: "POST",
                 body: formData,
+                formData: true,
             }),
             invalidatesTags: ["Profile"],
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    const { data } = await queryFulfilled;
+                    dispatch(updateUser({ avatar: data.data.avatar }));
+                } catch {}
+            },
         }),
 
-        // Lấy danh sách địa chỉ
         getAddresses: builder.query({
             query: () => "/users/addresses",
-            providesTags: ["Profile"],
+            providesTags: ["Addresses"],
         }),
 
-        // Thêm địa chỉ mới
         addAddress: builder.mutation({
             query: (data) => ({
                 url: "/users/addresses",
                 method: "POST",
                 body: data,
-                // data gồm: name, phone, province, district, ward, address, isDefault
             }),
-            invalidatesTags: ["Profile"],
+            invalidatesTags: ["Addresses"],
         }),
 
-        // Cập nhật địa chỉ
         updateAddress: builder.mutation({
-            query: ({ id, ...data }) => ({
-                url: `/users/addresses/${id}`,
+            query: ({ addressId, ...data }) => ({
+                url: `/users/addresses/${addressId}`,
                 method: "PUT",
                 body: data,
             }),
-            invalidatesTags: ["Profile"],
+            invalidatesTags: ["Addresses"],
         }),
 
-        // Xoá địa chỉ
         deleteAddress: builder.mutation({
-            query: (id) => ({
-                url: `/users/addresses/${id}`,
+            query: (addressId) => ({
+                url: `/users/addresses/${addressId}`,
                 method: "DELETE",
             }),
-            invalidatesTags: ["Profile"],
+            invalidatesTags: ["Addresses"],
         }),
 
-        // Đặt địa chỉ mặc định
         setDefaultAddress: builder.mutation({
-            query: (id) => ({
-                url: `/users/addresses/${id}/default`,
-                method: "PUT",
+            query: (addressId) => ({
+                url: `/users/addresses/${addressId}/default`,
+                method: "PATCH",
             }),
-            invalidatesTags: ["Profile"],
+            invalidatesTags: ["Addresses"],
         }),
 
-        // ── Admin endpoints ───────────────────────────────
-
-        // Lấy danh sách tất cả user — chỉ admin
+        // ── Admin ──────────────────────────────────────
         getAllUsers: builder.query({
-            query: (params) => ({
-                url: "/admin/users",
-                params: {
-                    page: params?.page || 1,
-                    limit: params?.limit || 10,
-                    search: params?.search,
-                    role: params?.role,
-                },
-            }),
-            providesTags: ["UserList"],
+            query: (params) => ({ url: "/admin/users", params }),
+            providesTags: ["Users"],
         }),
 
-        // Lấy chi tiết 1 user — chỉ admin
         getUserById: builder.query({
             query: (id) => `/admin/users/${id}`,
-            providesTags: (result, error, id) => [{ type: "User", id }],
+            providesTags: (_, __, id) => [{ type: "User", id }],
         }),
 
-        // Cập nhật thông tin user — chỉ admin
-        updateUser: builder.mutation({
-            query: ({ id, ...data }) => ({
-                url: `/admin/users/${id}`,
-                method: "PUT",
-                body: data,
-            }),
-            invalidatesTags: (result, error, { id }) => [
-                { type: "User", id },
-                "UserList",
-            ],
-        }),
-
-        // Cập nhật role user — chỉ admin
         updateUserRole: builder.mutation({
             query: ({ id, role }) => ({
                 url: `/admin/users/${id}/role`,
-                method: "PUT",
+                method: "PATCH",
                 body: { role },
             }),
-            invalidatesTags: (result, error, { id }) => [
-                { type: "User", id },
-                "UserList",
-            ],
+            invalidatesTags: ["Users"],
         }),
 
-        // Khoá / mở khoá tài khoản — chỉ admin
         toggleUserStatus: builder.mutation({
             query: (id) => ({
-                url: `/admin/users/${id}/toggle-status`,
-                method: "PUT",
+                url: `/admin/users/${id}/toggle`,
+                method: "PATCH",
             }),
-            invalidatesTags: (result, error, id) => [
-                { type: "User", id },
-                "UserList",
-            ],
+            invalidatesTags: ["Users"],
         }),
 
-        // Xoá user — chỉ admin
         deleteUser: builder.mutation({
             query: (id) => ({
                 url: `/admin/users/${id}`,
                 method: "DELETE",
             }),
-            invalidatesTags: ["UserList"],
+            invalidatesTags: ["Users"],
         }),
     }),
 });
@@ -158,7 +127,6 @@ export const {
     useSetDefaultAddressMutation,
     useGetAllUsersQuery,
     useGetUserByIdQuery,
-    useUpdateUserMutation,
     useUpdateUserRoleMutation,
     useToggleUserStatusMutation,
     useDeleteUserMutation,

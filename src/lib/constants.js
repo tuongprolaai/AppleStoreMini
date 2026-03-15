@@ -12,13 +12,14 @@ export const ROUTES = {
     LOGIN: "/login",
     REGISTER: "/register",
     FORGOT_PASSWORD: "/forgot-password",
-    RESET_PASSWORD: (token) => `/reset-password/${token}`,
+    RESET_PASSWORD: "/reset-password",
 
     // Profile
     PROFILE: "/profile",
     ORDERS: "/profile/orders",
     ORDER_DETAIL: (id) => `/profile/orders/${id}`,
-
+    ADDRESSES: "/profile/addresses",
+    CHANGE_PASSWORD: "/profile/change-password",
     // Admin
     ADMIN: "/admin",
     ADMIN_DASHBOARD: "/admin/dashboard",

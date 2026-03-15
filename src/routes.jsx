@@ -30,15 +30,17 @@ import TermsPage from "@/pages/TermsPage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
-import ResetPasswordPage from "@/pages/ResetPasswordPage";
+// import ChangePasswordPage from "@/pages/ChangePasswordPage";
 
-// Pages — checkout (cần đăng nhập)
+// Pages — checkout
 import CheckoutPage from "@/pages/CheckoutPage";
 
-// Pages — profile (cần đăng nhập)
+// Pages — profile
 import ProfilePage from "@/pages/ProfilePage";
 import OrderHistoryPage from "@/pages/OrderHistoryPage";
 import OrderDetailPage from "@/pages/OrderDetailPage";
+import AddressBookPage from "@/pages/AddressBookPage";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
 
 // Pages — admin
 import AdminDashboard from "@/pages/admin/AdminDashboard";
@@ -49,9 +51,10 @@ import AdminOrderList from "@/pages/admin/AdminOrderList";
 import AdminOrderDetail from "@/pages/admin/AdminOrderDetail";
 import AdminUserList from "@/pages/admin/AdminUserList";
 import AdminUserDetail from "@/pages/admin/AdminUserDetail";
+import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 export const router = createBrowserRouter([
-    // ── Public — có Navbar + Footer ──────────────────────
+    // ── Public ───────────────────────────────────────────
     {
         path: "/",
         element: <RootLayout />,
@@ -71,18 +74,17 @@ export const router = createBrowserRouter([
         ],
     },
 
-    // ── Auth — chỉ có logo, không Navbar ─────────────────
+    // ── Auth ─────────────────────────────────────────────
     {
         element: <AuthLayout />,
         children: [
             { path: "login", element: <LoginPage /> },
             { path: "register", element: <RegisterPage /> },
             { path: "forgot-password", element: <ForgotPasswordPage /> },
-            { path: "reset-password/:token", element: <ResetPasswordPage /> },
         ],
     },
 
-    // ── Checkout — cần đăng nhập, navbar tối giản ────────
+    // ── Checkout ─────────────────────────────────────────
     {
         element: (
             <ProtectedRoute>
@@ -92,21 +94,24 @@ export const router = createBrowserRouter([
         children: [{ path: "checkout", element: <CheckoutPage /> }],
     },
 
-    // ── Profile — cần đăng nhập, có sidebar trái ─────────
+    // ── Profile ──────────────────────────────────────────
     {
+        path: "profile",
         element: (
             <ProtectedRoute>
                 <ProfileLayout />
             </ProtectedRoute>
         ),
         children: [
-            { path: "profile", element: <ProfilePage /> },
-            { path: "profile/orders", element: <OrderHistoryPage /> },
-            { path: "profile/orders/:id", element: <OrderDetailPage /> },
+            { index: true, element: <ProfilePage /> },
+            { path: "orders", element: <OrderHistoryPage /> },
+            { path: "orders/:id", element: <OrderDetailPage /> },
+            { path: "addresses", element: <AddressBookPage /> },
+            { path: "change-password", element: <ChangePasswordPage /> },
         ],
     },
 
-    // ── Admin — cần role admin, layout riêng ─────────────
+    // ── Admin ─────────────────────────────────────────────
     {
         path: "admin",
         element: (

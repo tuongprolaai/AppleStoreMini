@@ -2,15 +2,18 @@ import axios from "axios";
 import { store } from "@/store";
 import { logout, setCredentials } from "@/store/authSlice";
 
+const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+    baseURL: BASE_URL,
     timeout: 10000,
+    withCredentials: true,
     headers: {
         "Content-Type": "application/json",
     },
 });
 
-// Request interceptor — tự động gắn JWT token vào header
+// ── Request interceptor — gắn accessToken vào header ──
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = store.getState().auth.accessToken;
@@ -22,43 +25,68 @@ axiosInstance.interceptors.request.use(
     (error) => Promise.reject(error),
 );
 
-// Response interceptor — tự động refresh token khi gặp lỗi 401
+// ── Response interceptor — tự refresh token khi 401 ──
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+    failedQueue.forEach((prom) => {
+        if (error) {
+            prom.reject(error);
+        } else {
+            prom.resolve(token);
+        }
+    });
+    failedQueue = [];
+};
+
 axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
 
-        // Nếu lỗi 401 và chưa retry
         if (error.response?.status === 401 && !originalRequest._retry) {
+            if (isRefreshing) {
+                return new Promise((resolve, reject) => {
+                    failedQueue.push({ resolve, reject });
+                }).then((token) => {
+                    originalRequest.headers.Authorization = `Bearer ${token}`;
+                    return axiosInstance(originalRequest);
+                });
+            }
+
             originalRequest._retry = true;
+            isRefreshing = true;
 
             try {
-                const response = await axiosInstance.post(
-                    "/auth/refresh-token",
+                const refreshToken = store.getState().auth.refreshToken;
+                if (!refreshToken) throw new Error("No refresh token");
+
+                const response = await axios.post(
+                    `${BASE_URL}/auth/refresh-token`,
+                    { refreshToken },
                 );
-                const { accessToken, user } = response.data;
 
-                // Lưu token mới vào store
-                store.dispatch(setCredentials({ accessToken, user }));
+                const { accessToken, refreshToken: newRefreshToken } =
+                    response.data.data;
 
-                // Gắn token mới vào request cũ và retry
+                store.dispatch(
+                    setCredentials({
+                        accessToken,
+                        refreshToken: newRefreshToken,
+                    }),
+                );
+
+                processQueue(null, accessToken);
                 originalRequest.headers.Authorization = `Bearer ${accessToken}`;
                 return axiosInstance(originalRequest);
-            } catch {
-                // Refresh token hết hạn — logout
+            } catch (refreshError) {
+                processQueue(refreshError, null);
                 store.dispatch(logout());
-                window.location.href = "/login";
-                return Promise.reject(error);
+                return Promise.reject(refreshError);
+            } finally {
+                isRefreshing = false;
             }
-        }
-
-        // Xử lý các lỗi thường gặp
-        if (error.response?.status === 403) {
-            window.location.href = "/";
-        }
-
-        if (error.response?.status === 500) {
-            console.error("Server error:", error.response.data);
         }
 
         return Promise.reject(error);

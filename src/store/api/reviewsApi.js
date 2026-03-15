@@ -2,96 +2,59 @@ import { baseApi } from "./baseApi";
 
 export const reviewsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // ── User endpoints ────────────────────────────────
-
-        // Lấy danh sách review của 1 sản phẩm
         getReviews: builder.query({
             query: ({ productId, params }) => ({
-                url: `/products/${productId}/reviews`,
-                params: {
-                    page: params?.page || 1,
-                    limit: params?.limit || 10,
-                    sort: params?.sort || "newest",
-                    rating: params?.rating,
-                },
+                url: `/reviews/${productId}`,
+                params,
             }),
-            providesTags: (result, error, { productId }) => [
-                { type: "Review", id: productId },
+            providesTags: (_, __, { productId }) => [
+                { type: "Reviews", id: productId },
             ],
         }),
 
-        // Viết review cho sản phẩm đã mua
         createReview: builder.mutation({
             query: ({ productId, ...data }) => ({
-                url: `/products/${productId}/reviews`,
+                url: `/reviews/${productId}`,
                 method: "POST",
                 body: data,
-                // data gồm: rating, comment, images[]
             }),
-            invalidatesTags: (result, error, { productId }) => [
-                { type: "Review", id: productId },
-                { type: "Product", id: productId },
+            invalidatesTags: (_, __, { productId }) => [
+                { type: "Reviews", id: productId },
+                "Products",
             ],
         }),
 
-        // Cập nhật review của mình
         updateReview: builder.mutation({
-            query: ({ reviewId, ...data }) => ({
-                url: `/reviews/${reviewId}`,
+            query: ({ productId, reviewId, ...data }) => ({
+                url: `/reviews/${productId}/${reviewId}`,
                 method: "PUT",
                 body: data,
             }),
-            invalidatesTags: (result, error, { productId }) => [
-                { type: "Review", id: productId },
+            invalidatesTags: (_, __, { productId }) => [
+                { type: "Reviews", id: productId },
             ],
         }),
 
-        // Xoá review của mình
         deleteReview: builder.mutation({
-            query: (reviewId) => ({
-                url: `/reviews/${reviewId}`,
+            query: ({ productId, reviewId }) => ({
+                url: `/reviews/${productId}/${reviewId}`,
                 method: "DELETE",
             }),
-            invalidatesTags: ["Review"],
+            invalidatesTags: (_, __, { productId }) => [
+                { type: "Reviews", id: productId },
+                "Products",
+            ],
         }),
 
-        // Like / unlike review
         likeReview: builder.mutation({
-            query: (reviewId) => ({
-                url: `/reviews/${reviewId}/like`,
+            query: ({ productId, reviewId }) => ({
+                url: `/reviews/${productId}/${reviewId}/like`,
                 method: "POST",
             }),
-            invalidatesTags: ["Review"],
         }),
 
-        // Kiểm tra user đã mua sản phẩm chưa — để hiện form review
         checkPurchased: builder.query({
-            query: (productId) => `/products/${productId}/check-purchased`,
-        }),
-
-        // ── Admin endpoints ───────────────────────────────
-
-        // Lấy tất cả review — chỉ admin
-        getAllReviews: builder.query({
-            query: (params) => ({
-                url: "/admin/reviews",
-                params: {
-                    page: params?.page || 1,
-                    limit: params?.limit || 10,
-                    rating: params?.rating,
-                    search: params?.search,
-                },
-            }),
-            providesTags: ["Review"],
-        }),
-
-        // Xoá review — chỉ admin
-        adminDeleteReview: builder.mutation({
-            query: (reviewId) => ({
-                url: `/admin/reviews/${reviewId}`,
-                method: "DELETE",
-            }),
-            invalidatesTags: ["Review"],
+            query: (productId) => `/reviews/${productId}/check-purchased`,
         }),
     }),
 });
@@ -103,6 +66,4 @@ export const {
     useDeleteReviewMutation,
     useLikeReviewMutation,
     useCheckPurchasedQuery,
-    useGetAllReviewsQuery,
-    useAdminDeleteReviewMutation,
 } = reviewsApi;

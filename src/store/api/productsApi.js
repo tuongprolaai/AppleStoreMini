@@ -2,30 +2,14 @@ import { baseApi } from "./baseApi";
 
 export const productsApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // ── User endpoints ────────────────────────────────
-
         getProducts: builder.query({
-            query: (params) => ({
-                url: "/products",
-                params,
-            }),
-            providesTags: (result) =>
-                result
-                    ? [
-                          ...result.data.map(({ id }) => ({
-                              type: "Product",
-                              id,
-                          })),
-                          { type: "Product", id: "LIST" },
-                      ]
-                    : [{ type: "Product", id: "LIST" }],
+            query: (params) => ({ url: "/products", params }),
+            providesTags: ["Products"],
         }),
 
         getProductBySlug: builder.query({
             query: (slug) => `/products/slug/${slug}`,
-            providesTags: (result, error, slug) => [
-                { type: "Product", id: slug },
-            ],
+            providesTags: (_, __, slug) => [{ type: "Product", id: slug }],
         }),
 
         getFeaturedProducts: builder.query({
@@ -33,23 +17,20 @@ export const productsApi = baseApi.injectEndpoints({
                 url: "/products/featured",
                 params: { limit },
             }),
-            providesTags: [{ type: "Product", id: "FEATURED" }],
+            providesTags: ["Products"],
         }),
 
         getNewProducts: builder.query({
-            query: (limit = 8) => ({
-                url: "/products",
-                params: { sort: "newest", limit },
-            }),
-            providesTags: [{ type: "Product", id: "NEW" }],
+            query: (limit = 8) => ({ url: "/products/new", params: { limit } }),
+            providesTags: ["Products"],
         }),
 
         getProductsByCategory: builder.query({
-            query: ({ category, limit = 8 }) => ({
+            query: ({ category, limit = 4 }) => ({
                 url: "/products",
                 params: { category, limit },
             }),
-            providesTags: [{ type: "Product", id: "LIST" }],
+            providesTags: ["Products"],
         }),
 
         getRelatedProducts: builder.query({
@@ -57,56 +38,49 @@ export const productsApi = baseApi.injectEndpoints({
                 url: `/products/slug/${slug}/related`,
                 params: { limit },
             }),
-            providesTags: [{ type: "Product", id: "LIST" }],
         }),
 
         searchProducts: builder.query({
             query: (keyword) => ({
                 url: "/products/search",
-                params: { q: keyword, limit: 5 },
+                params: { q: keyword },
             }),
         }),
 
-        // ── Admin endpoints ───────────────────────────────
-
+        // ── Admin ──────────────────────────────────────
         createProduct: builder.mutation({
             query: (data) => ({
-                url: "/products",
+                url: "/admin/products",
                 method: "POST",
                 body: data,
             }),
-            invalidatesTags: [{ type: "Product", id: "LIST" }],
+            invalidatesTags: ["Products"],
         }),
 
         updateProduct: builder.mutation({
             query: ({ id, ...data }) => ({
-                url: `/products/${id}`,
+                url: `/admin/products/${id}`,
                 method: "PUT",
                 body: data,
             }),
-            invalidatesTags: (result, error, { id }) => [
-                { type: "Product", id },
-                { type: "Product", id: "LIST" },
-            ],
+            invalidatesTags: ["Products", "Product"],
         }),
 
         deleteProduct: builder.mutation({
             query: (id) => ({
-                url: `/products/${id}`,
+                url: `/admin/products/${id}`,
                 method: "DELETE",
             }),
-            invalidatesTags: [{ type: "Product", id: "LIST" }],
+            invalidatesTags: ["Products"],
         }),
 
         uploadProductImages: builder.mutation({
             query: ({ id, formData }) => ({
-                url: `/products/${id}/images`,
+                url: `/admin/products/${id}/images`,
                 method: "POST",
                 body: formData,
             }),
-            invalidatesTags: (result, error, { id }) => [
-                { type: "Product", id },
-            ],
+            invalidatesTags: (_, __, { id }) => [{ type: "Product", id }],
         }),
     }),
 });
