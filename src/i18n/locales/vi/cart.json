@@ -12,7 +12,8 @@
         "price": "Đơn giá",
         "total": "Thành tiền",
         "remove": "Xoá",
-        "outOfStock": "Hết hàng"
+        "outOfStock": "Hết hàng",
+        "product": "Sản phẩm"
     },
 
     "summary": {

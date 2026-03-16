@@ -11,8 +11,8 @@ export function useProductSearch() {
 
     const debouncedKeyword = useDebounce(keyword, 300);
 
-    const { data, isLoading } = useSearchProductsQuery(debouncedKeyword, {
-        skip: debouncedKeyword.length < 2,
+    const { data, isFetching } = useSearchProductsQuery(debouncedKeyword, {
+      skip: debouncedKeyword.length < 2,
     });
 
     const suggestions = data?.data || [];
@@ -47,14 +47,14 @@ export function useProductSearch() {
     }, []);
 
     return {
-        keyword,
-        isOpen,
-        isLoading,
-        suggestions,
-        handleKeywordChange,
-        handleSearch,
-        handleSelectSuggestion,
-        handleClear,
-        handleClose,
+      keyword,
+      isOpen,
+      isFetching,
+      suggestions,
+      handleKeywordChange,
+      handleSearch,
+      handleSelectSuggestion,
+      handleClear,
+      handleClose,
     };
 }

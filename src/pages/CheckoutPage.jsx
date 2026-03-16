@@ -68,7 +68,7 @@ export default function CheckoutPage() {
             >
                 <Link to={ROUTES.CART}>
                     <ChevronLeft className="mr-1 h-4 w-4" />
-                    {t("cart.title", { ns: "cart" })}
+                    {t("cart:title", { ns: "cart" })}
                 </Link>
             </Button>
 

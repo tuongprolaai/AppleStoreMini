@@ -84,210 +84,193 @@ export default function AddressStep({ defaultData, onNext }) {
     };
 
     return (
-        <div className="rounded-2xl border border-border bg-card p-5 md:p-6">
-            <h2 className="mb-5 text-base font-semibold text-foreground">
-                {t("address.title")}
-            </h2>
+      <div className="rounded-2xl border border-border bg-card p-5 md:p-6">
+        <h2 className="mb-5 text-base font-semibold text-foreground">
+          {t("address.title")}
+        </h2>
 
-            {/* Saved addresses — dùng AddressSavedList */}
-            {isAuthenticated && addresses.length > 0 && (
-                <div className="mb-5 space-y-3">
-                    <AddressSavedList
-                        addresses={addresses}
-                        selectedId={selectedAddressId}
-                        onSelect={handleSelectAddress}
-                    />
+        {/* Saved addresses — dùng AddressSavedList */}
+        {isAuthenticated && addresses.length > 0 && (
+          <div className="mb-5 space-y-3">
+            <AddressSavedList
+              addresses={addresses}
+              selectedId={selectedAddressId}
+              onSelect={handleSelectAddress}
+            />
 
-                    {/* Toggle new form */}
-                    <button
-                        type="button"
-                        onClick={() => {
-                            setShowNewForm((v) => !v);
-                            if (!showNewForm) setSelectedAddressId(null);
-                        }}
-                        className={cn(
-                            "flex w-full items-center gap-2 rounded-xl border border-dashed p-4 text-sm transition-colors",
-                            showNewForm
-                                ? "border-foreground text-foreground"
-                                : "border-border text-muted-foreground hover:border-foreground/30",
-                        )}
-                    >
-                        <Plus className="h-4 w-4" />
-                        {t("address.addNewAddress")}
-                    </button>
+            {/* Toggle new form */}
+            <button
+              type="button"
+              onClick={() => {
+                setShowNewForm((v) => !v);
+                if (!showNewForm) setSelectedAddressId(null);
+              }}
+              className={cn(
+                "flex w-full items-center gap-2 rounded-xl border border-dashed p-4 text-sm transition-colors",
+                showNewForm
+                  ? "border-foreground text-foreground"
+                  : "border-border text-muted-foreground hover:border-foreground/30",
+              )}
+            >
+              <Plus className="h-4 w-4" />
+              {t("address.addNewAddress")}
+            </button>
+          </div>
+        )}
+
+        {/* New address form */}
+        {showNewForm && (
+          <>
+            {addresses.length > 0 && <Separator className="mb-5" />}
+            <Form {...form}>
+              <form className="space-y-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="fullName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("address.fullName")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={t("address.fullNamePlaceholder")}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("address.phone")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="tel"
+                            placeholder={t("address.phonePlaceholder")}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-            )}
 
-            {/* New address form */}
-            {showNewForm && (
-                <>
-                    {addresses.length > 0 && <Separator className="mb-5" />}
-                    <Form {...form}>
-                        <form className="space-y-4">
-                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <FormField
-                                    control={form.control}
-                                    name="fullName"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                {t("address.fullName")}
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    placeholder={t(
-                                                        "address.fullNamePlaceholder",
-                                                    )}
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="phone"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                {t("address.phone")}
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type="tel"
-                                                    placeholder={t(
-                                                        "address.phonePlaceholder",
-                                                    )}
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <FormField
+                    control={form.control}
+                    name="province"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("address.province")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={t("address.provincePlaceholder")}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="district"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("address.district")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={t("address.districtPlaceholder")}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="ward"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("address.ward")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={t("address.wardPlaceholder")}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                                <FormField
-                                    control={form.control}
-                                    name="province"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                {t("address.province")}
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    placeholder={t(
-                                                        "address.provincePlaceholder",
-                                                    )}
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="district"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                {t("address.district")}
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    placeholder={t(
-                                                        "address.districtPlaceholder",
-                                                    )}
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                                <FormField
-                                    control={form.control}
-                                    name="ward"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>
-                                                {t("address.ward")}
-                                            </FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    placeholder={t(
-                                                        "address.wardPlaceholder",
-                                                    )}
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </div>
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("address.address")}</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={t("address.addressPlaceholder")}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-                            <FormField
-                                control={form.control}
-                                name="address"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>
-                                            {t("address.address")}
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Input
-                                                placeholder={t(
-                                                    "address.addressPlaceholder",
-                                                )}
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                <FormField
+                  control={form.control}
+                  name="note"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t("address.note")}</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder={t("address.notePlaceholder")}
+                          rows={2}
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </form>
+            </Form>
+          </>
+        )}
 
-                            <FormField
-                                control={form.control}
-                                name="note"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>
-                                            {t("address.note")}
-                                        </FormLabel>
-                                        <FormControl>
-                                            <Textarea
-                                                placeholder={t(
-                                                    "address.notePlaceholder",
-                                                )}
-                                                rows={2}
-                                                {...field}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-                        </form>
-                    </Form>
-                </>
-            )}
+        {/* Actions */}
+        <div className="mt-6 flex justify-end gap-3">
+          {/* Chỉ hiện nút Hủy khi đang mở form mới VÀ user đã có địa chỉ lưu sẵn để quay về */}
+          {showNewForm && addresses.length > 0 && (
+            <Button
+              variant="outline"
+              onClick={() => setShowNewForm(false)}
+              className="rounded-full px-8"
+            >
+              {t("btn.cancel", { ns: "common" })}
+            </Button>
+          )}
 
-            {/* Next */}
-            <div className="mt-6 flex justify-end">
-                <Button
-                    onClick={handleNext}
-                    className="rounded-full px-8"
-                    disabled={!showNewForm && !selectedAddressId}
-                >
-                    {t("address.continue")}
-                </Button>
-            </div>
+          <Button
+            onClick={handleNext}
+            className="rounded-full px-8"
+            disabled={!showNewForm && !selectedAddressId}
+          >
+            {t("address.continue")}
+          </Button>
         </div>
+      </div>
     );
 }

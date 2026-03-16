@@ -37,26 +37,23 @@ export default function OrderDetail({ order }) {
 
     const handleCancel = async () => {
         try {
-            await cancelOrder({ id: order.id, reason: cancelReason }).unwrap();
-            toast({ title: t("toast.cancelSuccess") });
+            const orderId = order._id || order.id;
+            await cancelOrder({ id: orderId, reason: cancelReason }).unwrap();
+            toast.success(t("toast.cancelSuccess"));
             setCancelReason("");
+            setCancelOpen(false);
         } catch {
-            toast({
-                title: t("toast.cancelFailed"),
-                variant: "destructive",
-            });
+            toast.error(t("toast.cancelFailed"));
         }
     };
 
     const handleConfirmDelivered = async () => {
         try {
-            await confirmDelivered(order.id).unwrap();
-            toast({ title: t("toast.confirmSuccess") });
+            const orderId = order._id || order.id;
+            await confirmDelivered(orderId).unwrap();
+            toast.success(t("toast.confirmSuccess"));
         } catch {
-            toast({
-                title: t("status.error", { ns: "common" }),
-                variant: "destructive",
-            });
+            toast.error(t("status.error", { ns: "common" }));
         }
     };
 

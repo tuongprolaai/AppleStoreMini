@@ -60,9 +60,11 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
                         result = await baseQuery(args, api, extraOptions);
                     } else {
                         api.dispatch({ type: "auth/logout" });
+                        api.dispatch(baseApi.util.resetApiState());
                     }
                 } else {
                     api.dispatch({ type: "auth/logout" });
+                    api.dispatch(baseApi.util.resetApiState());
                 }
             } finally {
                 // Quan trọng: Phải mở khóa để các request đang đợi được chạy tiếp

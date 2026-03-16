@@ -9,27 +9,28 @@ import { removeFromCart, updateQuantity } from "@/store/cartSlice";
 import { ROUTES } from "@/lib/constants";
 
 export default function CartTableItem({ item, index, isLast }) {
+    const productId = item.product._id || item.product.id;
     const { t } = useTranslation("cart");
     const dispatch = useDispatch();
 
     const handleRemove = () => {
         dispatch(
-            removeFromCart({
-                productId: item.product.id,
-                selectedColor: item.selectedColor,
-                selectedStorage: item.selectedStorage,
-            }),
+          removeFromCart({
+            productId: productId,
+            selectedColor: item.selectedColor,
+            selectedStorage: item.selectedStorage,
+          }),
         );
     };
 
     const handleUpdateQty = (quantity) => {
         dispatch(
-            updateQuantity({
-                productId: item.product.id,
-                selectedColor: item.selectedColor,
-                selectedStorage: item.selectedStorage,
-                quantity,
-            }),
+          updateQuantity({
+            productId: productId,
+            selectedColor: item.selectedColor,
+            selectedStorage: item.selectedStorage,
+            quantity,
+          }),
         );
     };
 

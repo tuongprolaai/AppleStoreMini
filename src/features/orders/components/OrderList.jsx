@@ -42,10 +42,10 @@ export default function OrderList({ orders = [], isLoading = false }) {
     }
 
     return (
-        <div className="space-y-4">
-            {orders.map((order) => (
-                <OrderCard key={order.id} order={order} />
-            ))}
-        </div>
+      <div className="space-y-4">
+        {orders.map((order) => (
+          <OrderCard key={order._id || order.id} order={order} />
+        ))}
+      </div>
     );
 }

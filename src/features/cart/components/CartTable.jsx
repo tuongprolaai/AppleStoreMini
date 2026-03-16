@@ -31,7 +31,7 @@ export default function CartTable() {
 
             {/* Table header — desktop */}
             <div className="mb-3 hidden grid-cols-12 gap-4 text-xs font-medium uppercase tracking-wider text-muted-foreground md:grid">
-                <div className="col-span-6">{t("item.price")}</div>
+                <div className="col-span-6">{t("item.product")}</div>
                 <div className="col-span-2 text-center">{t("item.price")}</div>
                 <div className="col-span-2 text-center">
                     {t("item.quantity")}

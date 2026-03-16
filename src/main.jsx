@@ -7,7 +7,10 @@ import { Toaster } from "@/components/ui/sonner";
 import App from "./App.jsx";
 import "./index.css";
 import "./i18n";
+import { store } from "./store";
+import { injectStore } from "./lib/axios";
 
+injectStore(store);
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
         <AppProviders>

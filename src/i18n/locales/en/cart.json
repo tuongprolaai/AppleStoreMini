@@ -12,7 +12,8 @@
         "price": "Unit price",
         "total": "Total",
         "remove": "Remove",
-        "outOfStock": "Out of stock"
+        "outOfStock": "Out of stock",
+        "product": "Product"
     },
 
     "summary": {
