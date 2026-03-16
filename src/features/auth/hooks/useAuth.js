@@ -75,9 +75,10 @@ export function useAuth() {
     const logoutUser = async () => {
         try {
             await logoutMutation().unwrap();
-        } catch {
-            dispatch(logoutAction());
+        } catch (error) {
+            console.error("Lỗi đăng xuất server:", error);
         } finally {
+            dispatch(logoutAction());
             dispatch(clearCart());
             navigate(ROUTES.HOME);
         }

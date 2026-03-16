@@ -48,7 +48,7 @@ export default function CartDrawer() {
                         <div className="space-y-4">
                             {items.map((item, index) => (
                                 <div
-                                    key={`${item.product.id}-${item.selectedColor}-${item.selectedStorage}`}
+                                    key={`${item.product._id || item.product.id}-${item.selectedColor}-${item.selectedStorage}`}
                                 >
                                     <CartDrawerItem item={item} />
                                     {index < items.length - 1 && (

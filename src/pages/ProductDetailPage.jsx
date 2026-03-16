@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
@@ -40,11 +40,19 @@ export default function ProductDetailPage() {
     const product = data?.data;
 
     const isAuthenticated = useSelector(selectIsAuthenticated);
-    const isInWishlist = useSelector(selectIsInWishlist(product?.id));
+    const isInWishlist = useSelector(
+        selectIsInWishlist(product?._id || product?.id),
+    );
 
     const [selectedColor, setSelectedColor] = useState(null);
     const [selectedStorage, setSelectedStorage] = useState(null);
     const [quantity, setQuantity] = useState(1);
+
+    useEffect(() => {
+        setSelectedColor(null);
+        setSelectedStorage(null);
+        setQuantity(1);
+    }, [slug]);
 
     const currentColor = selectedColor ?? product?.colors?.[0];
     const currentStorage = selectedStorage ?? product?.storage?.[0];

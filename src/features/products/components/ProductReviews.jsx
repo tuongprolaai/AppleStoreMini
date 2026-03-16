@@ -18,6 +18,7 @@ import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import { toast } from "sonner";
 
 export default function ProductReviews({ product }) {
+    const productId = product?._id || product?.id;
     const { t } = useTranslation("product");
     const isAuthenticated = useSelector(selectIsAuthenticated);
 
@@ -27,10 +28,10 @@ export default function ProductReviews({ product }) {
     const [page, setPage] = useState(1);
 
     const { data, isLoading } = useGetReviewsQuery({
-        productId: product.id,
+        productId: productId,
         params: { page, limit: 5 },
     });
-    const { data: purchasedData } = useCheckPurchasedQuery(product.id, {
+    const { data: purchasedData } = useCheckPurchasedQuery(productId, {
         skip: !isAuthenticated,
     });
     const [deleteReview, { isLoading: isDeleting }] = useDeleteReviewMutation();

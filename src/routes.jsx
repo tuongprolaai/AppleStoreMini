@@ -30,7 +30,7 @@ import TermsPage from "@/pages/TermsPage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import ForgotPasswordPage from "@/pages/ForgotPasswordPage";
-// import ChangePasswordPage from "@/pages/ChangePasswordPage";
+import ChangePasswordPage from "@/pages/ChangePasswordPage";
 
 // Pages — checkout
 import CheckoutPage from "@/pages/CheckoutPage";
@@ -51,7 +51,6 @@ import AdminOrderList from "@/pages/admin/AdminOrderList";
 import AdminOrderDetail from "@/pages/admin/AdminOrderDetail";
 import AdminUserList from "@/pages/admin/AdminUserList";
 import AdminUserDetail from "@/pages/admin/AdminUserDetail";
-import ChangePasswordPage from "./pages/ChangePasswordPage";
 
 export const router = createBrowserRouter([
     // ── Public ───────────────────────────────────────────
@@ -81,6 +80,7 @@ export const router = createBrowserRouter([
             { path: "login", element: <LoginPage /> },
             { path: "register", element: <RegisterPage /> },
             { path: "forgot-password", element: <ForgotPasswordPage /> },
+            { path: "reset-password/:token", element: <ResetPasswordPage /> },
         ],
     },
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useUpdateOrderStatusMutation } from "@/store/api/ordersApi";
 import {
@@ -27,6 +27,10 @@ export default function AdminOrderStatusUpdate({ orderId, currentStatus }) {
     const { t } = useTranslation("admin");
     const [selected, setSelected] = useState(currentStatus);
     const [updateStatus, { isLoading }] = useUpdateOrderStatusMutation();
+
+    useEffect(() => {
+        setSelected(currentStatus);
+    }, [currentStatus]);
 
     const handleUpdate = async () => {
         if (selected === currentStatus) return;

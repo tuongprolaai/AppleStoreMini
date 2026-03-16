@@ -49,10 +49,12 @@ axiosInstance.interceptors.response.use(
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
-                }).then((token) => {
-                    originalRequest.headers.Authorization = `Bearer ${token}`;
-                    return axiosInstance(originalRequest);
-                });
+                })
+                    .then((token) => {
+                        originalRequest.headers.Authorization = `Bearer ${token}`;
+                        return axiosInstance(originalRequest);
+                    })
+                    .catch((err) => Promise.reject(err));
             }
 
             originalRequest._retry = true;

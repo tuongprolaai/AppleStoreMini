@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft } from "lucide-react";
-import { useCreateOrderMutation } from "@/store/api/ordersApi";
-import { selectCartItems, selectCartTotal, clearCart } from "@/store/cartSlice";
+
+// ✅ Import custom hook thần thánh của chúng ta
+import { useCheckout } from "@/features/checkout/hooks/useCheckout";
+
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import EmptyState from "@/components/shared/EmptyState";
@@ -15,70 +15,27 @@ import PaymentStep from "@/features/checkout/components/PaymentStep";
 import ConfirmStep from "@/features/checkout/components/ConfirmStep";
 import OrderSuccess from "@/features/checkout/components/OrderSuccess";
 import { formatPrice } from "@/lib/utils";
-import { ROUTES, SHIPPING } from "@/lib/constants";
-import { toast } from "sonner";
-
-const STEPS = ["address", "payment", "confirm"];
+import { ROUTES } from "@/lib/constants";
 
 export default function CheckoutPage() {
     const { t } = useTranslation("checkout");
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
 
-    const items = useSelector(selectCartItems);
-    const total = useSelector(selectCartTotal);
-
-    const [currentStep, setCurrentStep] = useState(0);
-    const [isSuccess, setIsSuccess] = useState(false);
-    const [createdOrder, setCreatedOrder] = useState(null);
-    const [checkoutData, setCheckoutData] = useState({
-        addressId: null,
-        address: null,
-        paymentMethod: null,
-    });
-
-    const [createOrder, { isLoading }] = useCreateOrderMutation();
-
-    const shippingFee =
-        total >= SHIPPING.FREE_THRESHOLD ? 0 : SHIPPING.DEFAULT_FEE;
-    const grandTotal = total + shippingFee;
-
-    // ── Step handlers ──────────────────────────────────
-    const handleAddressNext = (data) => {
-        setCheckoutData((prev) => ({ ...prev, ...data }));
-        setCurrentStep(1);
-    };
-
-    const handlePaymentNext = (data) => {
-        setCheckoutData((prev) => ({ ...prev, ...data }));
-        setCurrentStep(2);
-    };
-
-    const handleBack = () => {
-        setCurrentStep((s) => Math.max(0, s - 1));
-    };
-
-    const handlePlaceOrder = async () => {
-        try {
-            const response = await createOrder({
-                addressId: checkoutData.addressId,
-                paymentMethod: checkoutData.paymentMethod,
-                items: items.map((item) => ({
-                    productId: item.product._id || item.product.id,
-                    quantity: item.quantity,
-                    selectedColor: item.selectedColor,
-                    selectedStorage: item.selectedStorage,
-                })),
-                note: checkoutData.note,
-            }).unwrap();
-
-            setCreatedOrder(response.data);
-            dispatch(clearCart());
-            setIsSuccess(true);
-        } catch (error) {
-            toast.error(error?.data?.message || t("error.placeOrderFailed"));
-        }
-    };
+    // ✅ Gọi hook và lấy ra tất cả state/actions cần thiết
+    const {
+        currentStep,
+        isSuccess,
+        createdOrder,
+        checkoutData,
+        items,
+        total,
+        shippingFee,
+        grandTotal,
+        isLoading,
+        handleAddressNext,
+        handlePaymentNext,
+        handlePlaceOrder,
+        goBack,
+    } = useCheckout();
 
     // ── Empty cart ─────────────────────────────────────
     if (items.length === 0 && !isSuccess) {
@@ -131,7 +88,7 @@ export default function CheckoutPage() {
                         <PaymentStep
                             defaultData={checkoutData}
                             onNext={handlePaymentNext}
-                            onBack={handleBack}
+                            onBack={goBack} // ✅ Dùng hàm goBack từ hook
                         />
                     )}
                     {currentStep === 2 && (
@@ -142,7 +99,7 @@ export default function CheckoutPage() {
                             shippingFee={shippingFee}
                             grandTotal={grandTotal}
                             onPlaceOrder={handlePlaceOrder}
-                            onBack={handleBack}
+                            onBack={goBack} // ✅ Dùng hàm goBack từ hook
                             isLoading={isLoading}
                         />
                     )}

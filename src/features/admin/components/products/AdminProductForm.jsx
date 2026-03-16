@@ -190,6 +190,17 @@ export default function AdminProductForm({ product, onSubmit, isLoading }) {
                                                     )}
                                                     disabled={isLoading}
                                                     {...field}
+                                                    onChange={(e) =>
+                                                        field.onChange(
+                                                            e.target.value ===
+                                                                ""
+                                                                ? ""
+                                                                : Number(
+                                                                      e.target
+                                                                          .value,
+                                                                  ),
+                                                        )
+                                                    }
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -212,6 +223,17 @@ export default function AdminProductForm({ product, onSubmit, isLoading }) {
                                                     )}
                                                     disabled={isLoading}
                                                     {...field}
+                                                    onChange={(e) =>
+                                                        field.onChange(
+                                                            e.target.value ===
+                                                                ""
+                                                                ? ""
+                                                                : Number(
+                                                                      e.target
+                                                                          .value,
+                                                                  ),
+                                                        )
+                                                    }
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -250,7 +272,7 @@ export default function AdminProductForm({ product, onSubmit, isLoading }) {
                             {t("product.images")}
                         </h3>
                         <AdminProductImageUpload
-                            productId={product?.id}
+                            productId={product?._id || product?.id}
                             images={images}
                             onImagesChange={setImages}
                         />
@@ -331,7 +353,7 @@ export default function AdminProductForm({ product, onSubmit, isLoading }) {
 
                     {product && (
                         <p className="text-center text-xs text-muted-foreground">
-                            ID: {product.id}
+                            ID: {product?._id || product?._id}
                         </p>
                     )}
                 </div>

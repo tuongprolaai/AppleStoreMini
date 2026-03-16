@@ -11,11 +11,11 @@ import { Link } from "react-router-dom";
 export default function CartDrawerItem({ item }) {
     const { t } = useTranslation("cart");
     const dispatch = useDispatch();
-
+    const productId = item.product._id || item.product.id;
     const handleRemove = () => {
         dispatch(
             removeFromCart({
-                productId: item.product.id,
+                productId: productId,
                 selectedColor: item.selectedColor,
                 selectedStorage: item.selectedStorage,
             }),
@@ -25,7 +25,7 @@ export default function CartDrawerItem({ item }) {
     const handleUpdateQty = (quantity) => {
         dispatch(
             updateQuantity({
-                productId: item.product.id,
+                productId: productId,
                 selectedColor: item.selectedColor,
                 selectedStorage: item.selectedStorage,
                 quantity,

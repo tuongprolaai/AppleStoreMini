@@ -2,16 +2,15 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner"; // ✅ Đổi sang thư viện sonner
 import { useCreateOrderMutation } from "@/store/api/ordersApi";
 import { selectCartItems, selectCartTotal, clearCart } from "@/store/cartSlice";
-import { useToast } from "@/components/ui/use-toast";
 import { ROUTES, SHIPPING } from "@/lib/constants";
 
 export function useCheckout() {
     const { t } = useTranslation("checkout");
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { toast } = useToast();
 
     const items = useSelector(selectCartItems);
     const total = useSelector(selectCartTotal);
@@ -52,11 +51,15 @@ export function useCheckout() {
 
     // ── Place order ────────────────────────────────────
     const handlePlaceOrder = async () => {
+        // 1. Bảo vệ: Chặn giỏ hàng trống
+        if (items.length === 0) {
+            toast.error(t("error.emptyCart"));
+            return;
+        }
+
+        // 2. Bảo vệ: Chặn thiếu phương thức thanh toán
         if (!checkoutData.paymentMethod) {
-            toast({
-                title: t("error.placeOrderFailed"),
-                variant: "destructive",
-            });
+            toast.error(t("error.placeOrderFailed"));
             return;
         }
 
@@ -76,11 +79,13 @@ export function useCheckout() {
             setCreatedOrder(response.data);
             dispatch(clearCart());
             setIsSuccess(true);
+
+            // ✅ Thêm thông báo thành công cho mượt
+            toast.success(t("success.placeOrder"));
         } catch (error) {
-            toast({
-                title: t("error.placeOrderFailed"),
+            // ✅ Sử dụng sonner cho thông báo lỗi
+            toast.error(t("error.placeOrderFailed"), {
                 description: error?.data?.message,
-                variant: "destructive",
             });
         }
     };
