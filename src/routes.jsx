@@ -10,6 +10,7 @@ import ProfileLayout from "@/components/layout/ProfileLayout";
 // Guards
 import ProtectedRoute from "@/features/auth/components/ProtectedRoute";
 import AdminRoute from "@/features/auth/components/AdminRoute";
+import GuestRoute from "@/features/auth/components/GuestRoute";
 
 // Pages — public
 import HomePage from "@/pages/HomePage";
@@ -63,7 +64,6 @@ export const router = createBrowserRouter([
             { path: "products/:slug", element: <ProductDetailPage /> },
             { path: "cart", element: <CartPage /> },
             { path: "search", element: <SearchPage /> },
-            { path: "wishlist", element: <WishlistPage /> },
             { path: "about", element: <AboutPage /> },
             { path: "contact", element: <ContactPage /> },
             { path: "warranty", element: <WarrantyPage /> },
@@ -77,10 +77,34 @@ export const router = createBrowserRouter([
     {
         element: <AuthLayout />,
         children: [
-            { path: "login", element: <LoginPage /> },
-            { path: "register", element: <RegisterPage /> },
-            { path: "forgot-password", element: <ForgotPasswordPage /> },
-            { path: "reset-password/:token", element: <ResetPasswordPage /> },
+            {
+                path: "login",
+                element: (
+                    <GuestRoute>
+                        <LoginPage />
+                    </GuestRoute>
+                ),
+            },
+            {
+                path: "register",
+                element: (
+                    <GuestRoute>
+                        <RegisterPage />
+                    </GuestRoute>
+                ),
+            },
+            {
+                path: "forgot-password",
+                element: (
+                    <GuestRoute>
+                        <ForgotPasswordPage />
+                    </GuestRoute>
+                ),
+            },
+            {
+                path: "reset-password/:token",
+                element: <ResetPasswordPage />,
+            },
         ],
     },
 
@@ -104,6 +128,7 @@ export const router = createBrowserRouter([
         ),
         children: [
             { index: true, element: <ProfilePage /> },
+            { path: "wishlist", element: <WishlistPage /> },
             { path: "orders", element: <OrderHistoryPage /> },
             { path: "orders/:id", element: <OrderDetailPage /> },
             { path: "addresses", element: <AddressBookPage /> },
@@ -123,7 +148,7 @@ export const router = createBrowserRouter([
             { index: true, element: <Navigate to="dashboard" replace /> },
             { path: "dashboard", element: <AdminDashboard /> },
             { path: "products", element: <AdminProductList /> },
-            { path: "products/create", element: <AdminProductCreate /> },
+            { path: "products/new", element: <AdminProductCreate /> },
             { path: "products/:id/edit", element: <AdminProductEdit /> },
             { path: "orders", element: <AdminOrderList /> },
             { path: "orders/:id", element: <AdminOrderDetail /> },

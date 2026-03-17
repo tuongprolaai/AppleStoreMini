@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// Không cần load từ localStorage nữa, redux-persist sẽ tự lo việc đó!
 const initialState = {
     items: [],
 };
+
+const getProductId = (product) => product?._id || product?.id;
 
 const cartSlice = createSlice({
     name: "cart",
@@ -11,11 +12,11 @@ const cartSlice = createSlice({
     reducers: {
         addToCart: (state, action) => {
             const newItem = action.payload;
-            const newId = newItem.product._id || newItem.product.id;
+            const newId = getProductId(newItem.product);
 
             const existingItem = state.items.find(
                 (item) =>
-                    (item.product._id || item.product.id) === newId &&
+                    getProductId(item.product) === newId &&
                     item.selectedColor === newItem.selectedColor &&
                     item.selectedStorage === newItem.selectedStorage,
             );
@@ -37,7 +38,7 @@ const cartSlice = createSlice({
             state.items = state.items.filter(
                 (item) =>
                     !(
-                        (item.product._id || item.product.id) === productId &&
+                        getProductId(item.product) === productId &&
                         item.selectedColor === selectedColor &&
                         item.selectedStorage === selectedStorage
                     ),
@@ -48,21 +49,33 @@ const cartSlice = createSlice({
             const { productId, selectedColor, selectedStorage, quantity } =
                 action.payload;
 
+            // Nếu quantity <= 0 thì xóa item
+            if (quantity <= 0) {
+                state.items = state.items.filter(
+                    (item) =>
+                        !(
+                            getProductId(item.product) === productId &&
+                            item.selectedColor === selectedColor &&
+                            item.selectedStorage === selectedStorage
+                        ),
+                );
+                return;
+            }
+
             const item = state.items.find(
                 (item) =>
-                    (item.product._id || item.product.id) === productId &&
+                    getProductId(item.product) === productId &&
                     item.selectedColor === selectedColor &&
                     item.selectedStorage === selectedStorage,
             );
 
-            if (item && quantity > 0) {
+            if (item) {
                 item.quantity = quantity;
             }
         },
 
         clearCart: (state) => {
             state.items = [];
-            // Không cần removeItem localStorage ở đây, dispatch clearCart thì redux-persist tự update.
         },
     },
 });
@@ -73,11 +86,12 @@ export const { addToCart, removeFromCart, updateQuantity, clearCart } =
 export default cartSlice.reducer;
 
 // ── Selectors ─────────────────────────────────────────
+
 export const selectCartItems = (state) => state.cart.items;
 
 export const selectCartTotal = (state) =>
     state.cart.items.reduce(
-        (total, item) => total + item.product.price * item.quantity,
+        (total, item) => total + (item.product?.price ?? 0) * item.quantity,
         0,
     );
 

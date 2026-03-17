@@ -6,6 +6,7 @@ export { default as ResetPasswordForm } from "./components/ResetPasswordForm";
 export { default as AuthModal } from "./components/AuthModal";
 export { default as ProtectedRoute } from "./components/ProtectedRoute";
 export { default as AdminRoute } from "./components/AdminRoute";
+export { default as GuestRoute } from "./components/GuestRoute";
 
 // Hooks
 export { useAuth } from "./hooks/useAuth";

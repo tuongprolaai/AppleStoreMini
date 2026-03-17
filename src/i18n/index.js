@@ -1,6 +1,7 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
+import { STORAGE_KEYS } from "@/lib/constants";
 
 // Tiếng Việt
 import viCommon from "./locales/vi/common.json";
@@ -51,7 +52,9 @@ i18n.use(LanguageDetector)
                 validation: enValidation,
             },
         },
+
         fallbackLng: "vi",
+
         ns: [
             "common",
             "auth",
@@ -64,14 +67,15 @@ i18n.use(LanguageDetector)
             "validation",
         ],
         defaultNS: "common",
+
         interpolation: {
             escapeValue: false,
         },
+
         detection: {
-            // Thứ tự ưu tiên detect ngôn ngữ
             order: ["localStorage", "navigator"],
-            lookupLocalStorage: "apple-store-language",
-            cacheUserLanguage: true,
+            lookupLocalStorage: STORAGE_KEYS.LANGUAGE,
+            caches: ["localStorage"],
         },
     });
 

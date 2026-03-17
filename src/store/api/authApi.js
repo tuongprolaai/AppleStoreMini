@@ -1,5 +1,5 @@
 import { baseApi } from "./baseApi";
-import { setCredentials, logout } from "../authSlice";
+import { setCredentials } from "../authSlice";
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -23,12 +23,7 @@ export const authApi = baseApi.injectEndpoints({
                 method: "POST",
                 body: data,
             }),
-            async onQueryStarted(_, { dispatch, queryFulfilled }) {
-                try {
-                    const { data } = await queryFulfilled;
-                    dispatch(setCredentials(data.data));
-                } catch {}
-            },
+            // Không auto login sau register
         }),
 
         logout: builder.mutation({
@@ -36,13 +31,8 @@ export const authApi = baseApi.injectEndpoints({
                 url: "/auth/logout",
                 method: "POST",
             }),
-            async onQueryStarted(_, { dispatch, queryFulfilled }) {
-                try {
-                    await queryFulfilled;
-                } finally {
-                    dispatch(logout());
-                }
-            },
+            // Không dispatch logout ở đây
+            // useAuth sẽ xử lý toàn bộ
         }),
 
         getMe: builder.query({
@@ -54,14 +44,6 @@ export const authApi = baseApi.injectEndpoints({
                     dispatch(setCredentials({ user: data.data }));
                 } catch {}
             },
-        }),
-
-        refreshToken: builder.mutation({
-            query: (refreshToken) => ({
-                url: "/auth/refresh-token",
-                method: "POST",
-                body: { refreshToken },
-            }),
         }),
 
         forgotPassword: builder.mutation({

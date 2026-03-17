@@ -31,11 +31,12 @@ export function useAuth() {
         useLogoutMutation();
     const [syncCart] = useSyncCartMutation();
 
-    const login = async (credentials) => {
+    const login = async (credentials, redirectTo = ROUTES.HOME) => {
         try {
+            // login API sẽ tự dispatch setCredentials từ authApi
             await loginMutation(credentials).unwrap();
 
-            // Sync giỏ hàng local lên server sau khi login
+            // Sync giỏ hàng local → server
             if (cartItems.length > 0) {
                 try {
                     await syncCart(
@@ -45,12 +46,13 @@ export function useAuth() {
                             selectedColor: item.selectedColor,
                             selectedStorage: item.selectedStorage,
                         })),
-                    );
+                    ).unwrap();
                 } catch {
-                    // Không throw — sync thất bại không ảnh hưởng login
+                    // Sync fail không ảnh hưởng login
                 }
             }
 
+            navigate(redirectTo);
             return { success: true };
         } catch (error) {
             return {
@@ -88,9 +90,11 @@ export function useAuth() {
         user,
         isAuthenticated,
         isAdmin,
+
         isLoginLoading,
         isRegisterLoading,
         isLogoutLoading,
+
         login,
         register,
         logout: logoutUser,
