@@ -104,7 +104,7 @@ export default function OrderCard({ order }) {
                     className="rounded-full"
                     asChild
                 >
-                    <Link to={ROUTES.ORDER_DETAIL(order.id)}>
+                    <Link to={ROUTES.ORDER_DETAIL(order._id || order.id)}>
                         {t("detail.orderInfo")}
                         <ChevronRight className="ml-1 h-3.5 w-3.5" />
                     </Link>

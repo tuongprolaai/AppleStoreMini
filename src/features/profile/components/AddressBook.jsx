@@ -13,6 +13,7 @@ import {
     useSetDefaultAddressMutation,
 } from "@/store/api/usersApi";
 import { toast } from "sonner";
+import { MapPin } from "lucide-react";
 export default function AddressBook() {
     const { t } = useTranslation("profile");
     const [formOpen, setFormOpen] = useState(false);
@@ -110,7 +111,7 @@ export default function AddressBook() {
             {/* Address list */}
             {addresses.length === 0 && !formOpen ? (
                 <EmptyState
-                    icon="📍"
+                    icon={MapPin}
                     title={t("address.empty")}
                     description={t("address.emptyDesc")}
                     actionLabel={t("address.addNew")}
@@ -118,17 +119,20 @@ export default function AddressBook() {
                 />
             ) : (
                 <div className="space-y-4">
-                    {addresses.map((address) => (
-                        <AddressCard
-                            key={address.id}
-                            address={address}
-                            onEdit={() => handleEdit(address)}
-                            onDelete={() => handleDelete(address.id)}
-                            onSetDefault={() => handleSetDefault(address.id)}
-                            isDeleting={isDeleting}
-                            isSettingDefault={isSettingDefault}
-                        />
-                    ))}
+                    {addresses.map((address) => {
+                        const addrId = address._id || address.id;
+                        return (
+                            <AddressCard
+                                key={addrId}
+                                address={address}
+                                onEdit={() => handleEdit(address)}
+                                onDelete={() => handleDelete(addrId)}
+                                onSetDefault={() => handleSetDefault(addrId)}
+                                isDeleting={isDeleting}
+                                isSettingDefault={isSettingDefault}
+                            />
+                        );
+                    })}
                 </div>
             )}
         </div>

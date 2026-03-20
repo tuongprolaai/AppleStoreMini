@@ -74,7 +74,7 @@ export default function ConfirmStep({
                 <div className="space-y-4">
                     {items.map((item, index) => (
                         <OrderItemRow
-                            key={`${item.product.id}-${item.selectedColor}-${item.selectedStorage}`}
+                            key={`${item.product._id || item.product.id}-${item.selectedColor}-${item.selectedStorage}`}
                             item={item}
                             index={index}
                             isLast={index === items.length - 1}

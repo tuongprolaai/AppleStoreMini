@@ -195,7 +195,11 @@ export default function OrderDetail({ order }) {
                         </div>
                         <div className="flex items-center justify-between text-sm">
                             <span className="text-foreground">
-                                {t(`payment.${order.paymentMethod}`)}
+                                {order.paymentMethod
+                                    ? t(`payment.${order.paymentMethod}`)
+                                    : t("payment.unknown", {
+                                          defaultValue: "Không xác định",
+                                      })}
                             </span>
                             <span
                                 className={

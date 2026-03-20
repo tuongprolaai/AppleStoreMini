@@ -11,17 +11,17 @@ const CONTACT_INFO = [
     {
         icon: MapPin,
         label: "Địa chỉ",
-        value: "123 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh",
+        value: "41/1 Khu phố 7, Phường 2, Đắk Lắk",
     },
     {
         icon: Phone,
         label: "Hotline",
-        value: "1800 1234 (miễn phí)",
+        value: "0562456055 (miễn phí)",
     },
     {
         icon: Mail,
         label: "Email",
-        value: "support@applestore.vn",
+        value: "phuctuong123456@gmail.com",
     },
     {
         icon: Clock,

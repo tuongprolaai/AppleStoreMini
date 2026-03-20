@@ -122,7 +122,7 @@ export default function OrderSuccess({ order }) {
             {/* Actions */}
             <div className="flex flex-col gap-3 sm:flex-row">
                 <Button className="rounded-full px-8" asChild>
-                    <Link to={ROUTES.ORDER_DETAIL(order?.id)}>
+                    <Link to={ROUTES.ORDER_DETAIL(order?._id || order?.id)}>
                         {t("success.trackOrder")}
                     </Link>
                 </Button>

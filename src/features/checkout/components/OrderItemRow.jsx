@@ -6,7 +6,12 @@ import { ROUTES } from "@/lib/constants";
 
 export default function OrderItemRow({ item, index, total, isLast }) {
     const { t } = useTranslation("checkout");
-
+    const unitPrice = item.price ?? item.product?.price ?? 0;
+    const lineTotal = unitPrice * item.quantity;
+    const effectivePrice =
+        item.product?.salePrice && item.product.salePrice < item.product?.price
+            ? item.product.salePrice
+            : item.product?.price || item.price || 0;
     return (
         <div>
             <div className="flex gap-4">
@@ -55,25 +60,12 @@ export default function OrderItemRow({ item, index, total, isLast }) {
                     {/* Price + Qty */}
                     <div className="mt-1.5 flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                            <PriceDisplay
-                                price={item.product?.price || item.price}
-                                originalPrice={item.product?.originalPrice}
-                                size="sm"
-                            />
+                            <PriceDisplay price={unitPrice} size="sm" />
                             <span className="text-xs text-muted-foreground">
                                 × {item.quantity}
                             </span>
                         </div>
-
-                        {/* Line total */}
-                        <PriceDisplay
-                            price={
-                                total ||
-                                (item.product?.price || item.price) *
-                                    item.quantity
-                            }
-                            size="sm"
-                        />
+                        <PriceDisplay price={lineTotal} size="sm" />
                     </div>
                 </div>
             </div>
