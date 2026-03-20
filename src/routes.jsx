@@ -70,6 +70,26 @@ export const router = createBrowserRouter([
             { path: "return", element: <ReturnPolicyPage /> },
             { path: "privacy", element: <PrivacyPage /> },
             { path: "terms", element: <TermsPage /> },
+            // ── Profile ──────────────────────────────────────────
+            {
+                path: "profile",
+                element: (
+                    <ProtectedRoute>
+                        <ProfileLayout />
+                    </ProtectedRoute>
+                ),
+                children: [
+                    { index: true, element: <ProfilePage /> },
+                    { path: "wishlist", element: <WishlistPage /> },
+                    { path: "orders", element: <OrderHistoryPage /> },
+                    { path: "orders/:id", element: <OrderDetailPage /> },
+                    { path: "addresses", element: <AddressBookPage /> },
+                    {
+                        path: "change-password",
+                        element: <ChangePasswordPage />,
+                    },
+                ],
+            },
         ],
     },
 
@@ -118,23 +138,23 @@ export const router = createBrowserRouter([
         children: [{ path: "checkout", element: <CheckoutPage /> }],
     },
 
-    // ── Profile ──────────────────────────────────────────
-    {
-        path: "profile",
-        element: (
-            <ProtectedRoute>
-                <ProfileLayout />
-            </ProtectedRoute>
-        ),
-        children: [
-            { index: true, element: <ProfilePage /> },
-            { path: "wishlist", element: <WishlistPage /> },
-            { path: "orders", element: <OrderHistoryPage /> },
-            { path: "orders/:id", element: <OrderDetailPage /> },
-            { path: "addresses", element: <AddressBookPage /> },
-            { path: "change-password", element: <ChangePasswordPage /> },
-        ],
-    },
+    // // ── Profile ──────────────────────────────────────────
+    // {
+    //     path: "profile",
+    //     element: (
+    //         <ProtectedRoute>
+    //             <ProfileLayout />
+    //         </ProtectedRoute>
+    //     ),
+    //     children: [
+    //         { index: true, element: <ProfilePage /> },
+    //         { path: "wishlist", element: <WishlistPage /> },
+    //         { path: "orders", element: <OrderHistoryPage /> },
+    //         { path: "orders/:id", element: <OrderDetailPage /> },
+    //         { path: "addresses", element: <AddressBookPage /> },
+    //         { path: "change-password", element: <ChangePasswordPage /> },
+    //     ],
+    // },
 
     // ── Admin ─────────────────────────────────────────────
     {

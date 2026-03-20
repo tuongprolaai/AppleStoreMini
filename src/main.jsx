@@ -2,17 +2,17 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { PersistGate } from "redux-persist/integration/react";
 import { Provider } from "react-redux";
-import { persistor } from "./store";
+import { store, persistor } from "./store";
 import AppProviders from "./providers/AppProviders";
 import { Toaster } from "@/components/ui/sonner";
 import LoadingScreen from "./components/shared/LoadingScreen";
 import App from "./App.jsx";
 import "./index.css";
 import "./i18n";
-import { store } from "./store";
 import { injectStore } from "./lib/axios";
 
 injectStore(store);
+
 ReactDOM.createRoot(document.getElementById("root")).render(
     <Provider store={store}>
         <PersistGate loading={<LoadingScreen />} persistor={persistor}>

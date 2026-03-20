@@ -4,24 +4,20 @@ import { setCredentials, logout } from "@/store/authSlice";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-// Mutex để tránh nhiều request refresh token cùng lúc
 const mutex = new Mutex();
 
 const baseQuery = fetchBaseQuery({
     baseUrl: BASE_URL,
-    credentials: "include", // gửi httpOnly cookie
+    credentials: "include",
     prepareHeaders: (headers, { getState }) => {
         const token = getState().auth.accessToken;
-
         if (token) {
             headers.set("Authorization", `Bearer ${token}`);
         }
-
         return headers;
     },
 });
 
-// Auto refresh token khi 401
 const baseQueryWithReauth = async (args, api, extraOptions) => {
     await mutex.waitForUnlock();
 
@@ -32,33 +28,32 @@ const baseQueryWithReauth = async (args, api, extraOptions) => {
             const release = await mutex.acquire();
 
             try {
-                // gọi refresh token — cookie tự gửi
                 const refreshResult = await baseQuery(
-                    {
-                        url: "/auth/refresh-token",
-                        method: "POST",
-                    },
+                    { url: "/auth/refresh-token", method: "POST" },
                     api,
                     extraOptions,
                 );
 
-                if (refreshResult.data) {
-                    const { accessToken } = refreshResult.data.data;
+                // Defensive: kiểm tra kỹ trước khi truy cập nested data
+                const newToken =
+                    refreshResult.data?.data?.accessToken ??
+                    refreshResult.data?.accessToken;
 
-                    // cập nhật accessToken mới
-                    api.dispatch(setCredentials({ accessToken }));
-
-                    // retry request ban đầu
+                if (newToken) {
+                    api.dispatch(setCredentials({ accessToken: newToken }));
                     result = await baseQuery(args, api, extraOptions);
                 } else {
                     api.dispatch(logout());
                     api.dispatch(baseApi.util.resetApiState());
                 }
+            } catch {
+                // Nếu refresh throw unexpected error vẫn logout an toàn
+                api.dispatch(logout());
+                api.dispatch(baseApi.util.resetApiState());
             } finally {
                 release();
             }
         } else {
-            // chờ request refresh khác hoàn thành
             await mutex.waitForUnlock();
             result = await baseQuery(args, api, extraOptions);
         }
@@ -81,6 +76,7 @@ export const baseApi = createApi({
         "Cart",
         "Profile",
         "Addresses",
+        "Wishlist",
     ],
     endpoints: () => ({}),
 });

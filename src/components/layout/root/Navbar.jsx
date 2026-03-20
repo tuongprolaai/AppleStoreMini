@@ -20,7 +20,7 @@ import { CATEGORIES, ROUTES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 
 // import logo SVG
-import appleLogo from "@/assets/icons/apple.svg";
+import appleLogo from "@/assets/images/icons/apple.svg";
 
 export default function Navbar() {
     const dispatch = useDispatch();
@@ -39,96 +39,93 @@ export default function Navbar() {
                     : "border-transparent bg-background/60 backdrop-blur-sm",
             )}
         >
-            <div className="section-padding flex h-14 items-center justify-between gap-4">
-                {/* ── Left — Logo + Nav ── */}
-                <div
-                    className={cn(
-                        "flex items-center gap-8 transition-all duration-200",
-                        searchOpen && "hidden md:flex",
-                    )}
-                >
-                    <Link
-                        to={ROUTES.HOME}
-                        className="flex shrink-0 items-center transition-opacity hover:opacity-70"
+            <div className="section-padding">
+                <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between gap-4">
+                    {/* ── Left — Logo + Nav ── */}
+                    <div
+                        className={cn(
+                            "flex items-center gap-8 transition-all duration-200",
+                            searchOpen && "hidden md:flex",
+                        )}
                     >
-                        <img
-                            src={appleLogo}
-                            alt="Apple"
-                            className="h-6 w-6 dark:invert"
-                        />
-                    </Link>
-
-                    {/* Desktop nav */}
-                    <nav className="hidden items-center gap-1 md:flex">
-                        {CATEGORIES.map((cat) => (
-                            <MegaMenu key={cat.value} category={cat} />
-                        ))}
-                    </nav>
-                </div>
-
-                {/* ── Center — Search bar ── */}
-                {searchOpen && (
-                    <div className="flex flex-1 items-center gap-2">
-                        <NavbarSearch
-                            onClose={() => dispatch(toggleSearch(false))}
-                        />
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="shrink-0 rounded-full"
-                            aria-label="Đóng tìm kiếm"
-                            onClick={() => dispatch(toggleSearch(false))}
+                        <Link
+                            to={ROUTES.HOME}
+                            className="flex shrink-0 items-center transition-opacity hover:opacity-70"
                         >
-                            <X className="h-5 w-5" />
-                        </Button>
+                            <img
+                                src={appleLogo}
+                                alt="Apple"
+                                className="h-6 w-6 dark:invert"
+                            />
+                        </Link>
+                        <nav className="hidden items-center gap-1 md:flex">
+                            {CATEGORIES.map((cat) => (
+                                <MegaMenu key={cat.value} category={cat} />
+                            ))}
+                        </nav>
                     </div>
-                )}
 
-                {/* ── Right — Actions ── */}
-                <div
-                    className={cn(
-                        "flex items-center gap-0.5",
-                        searchOpen && "hidden md:flex",
-                    )}
-                >
-                    {/* Search button */}
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="rounded-full"
-                        aria-label="Tìm kiếm"
-                        onClick={() => {
-                            dispatch(toggleSearch(true));
-                            dispatch(toggleMobileMenu(false));
-                        }}
-                    >
-                        <Search className="h-5 w-5" />
-                    </Button>
-
-                    <NavbarActions />
-
-                    {/* Mobile menu */}
-                    <Sheet
-                        open={mobileOpen}
-                        onOpenChange={(open) =>
-                            dispatch(toggleMobileMenu(open))
-                        }
-                    >
-                        <SheetTrigger asChild>
+                    {/* ── Center — Search bar ── */}
+                    {searchOpen && (
+                        <div className="flex flex-1 items-center gap-2">
+                            <NavbarSearch
+                                onClose={() => dispatch(toggleSearch(false))}
+                            />
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="rounded-full md:hidden"
-                                aria-label="Mở menu"
+                                className="shrink-0 rounded-full"
+                                aria-label="Đóng tìm kiếm"
+                                onClick={() => dispatch(toggleSearch(false))}
                             >
-                                <Menu className="h-5 w-5" />
+                                <X className="h-5 w-5" />
                             </Button>
-                        </SheetTrigger>
+                        </div>
+                    )}
 
-                        <SheetContent side="right" className="w-72 p-0">
-                            <NavbarMobile />
-                        </SheetContent>
-                    </Sheet>
+                    {/* ── Right — Actions ── */}
+                    <div
+                        className={cn(
+                            "flex items-center gap-0.5",
+                            searchOpen && "hidden md:flex",
+                        )}
+                    >
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="rounded-full"
+                            aria-label="Tìm kiếm"
+                            onClick={() => {
+                                dispatch(toggleSearch(true));
+                                dispatch(toggleMobileMenu(false));
+                            }}
+                        >
+                            <Search className="h-5 w-5" />
+                        </Button>
+
+                        <NavbarActions />
+
+                        <Sheet
+                            open={mobileOpen}
+                            onOpenChange={(open) =>
+                                dispatch(toggleMobileMenu(open))
+                            }
+                        >
+                            <SheetTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="rounded-full md:hidden"
+                                    aria-label="Mở menu"
+                                >
+                                    <Menu className="h-5 w-5" />
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="right" className="w-72 p-0">
+                                <NavbarMobile />
+                            </SheetContent>
+                        </Sheet>
+                    </div>
                 </div>
             </div>
         </header>

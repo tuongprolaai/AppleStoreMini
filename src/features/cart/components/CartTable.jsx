@@ -25,7 +25,7 @@ export default function CartTable() {
                     onClick={() => dispatch(clearCart())}
                 >
                     <Trash2 className="mr-1.5 h-3.5 w-3.5" />
-                    {t("toast.clearSuccess")}
+                    {t("clearCart", { defaultValue: "Xóa giỏ hàng" })}
                 </Button>
             </div>
 

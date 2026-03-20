@@ -15,24 +15,29 @@ export default function CartTableItem({ item, index, isLast }) {
 
     const handleRemove = () => {
         dispatch(
-          removeFromCart({
-            productId: productId,
-            selectedColor: item.selectedColor,
-            selectedStorage: item.selectedStorage,
-          }),
+            removeFromCart({
+                productId: productId,
+                selectedColor: item.selectedColor,
+                selectedStorage: item.selectedStorage,
+            }),
         );
     };
 
     const handleUpdateQty = (quantity) => {
         dispatch(
-          updateQuantity({
-            productId: productId,
-            selectedColor: item.selectedColor,
-            selectedStorage: item.selectedStorage,
-            quantity,
-          }),
+            updateQuantity({
+                productId: productId,
+                selectedColor: item.selectedColor,
+                selectedStorage: item.selectedStorage,
+                quantity,
+            }),
         );
     };
+
+    const effectivePrice =
+        item.product.salePrice && item.product.salePrice < item.product.price
+            ? item.product.salePrice
+            : item.product.price;
 
     return (
         <div>
@@ -85,7 +90,7 @@ export default function CartTableItem({ item, index, isLast }) {
                 {/* Price — desktop */}
                 <div className="col-span-2 hidden items-center justify-center md:flex">
                     <PriceDisplay
-                        price={item.product.price}
+                        price={effectivePrice}
                         originalPrice={item.product.originalPrice}
                         size="sm"
                     />

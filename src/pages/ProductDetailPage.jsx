@@ -174,7 +174,7 @@ export default function ProductDetailPage() {
 
                     {/* Actions */}
                     <div className="flex gap-3">
-                        <Button
+                        {/* <Button
                             size="lg"
                             className="flex-1 rounded-full text-base"
                             disabled={!product.inStock}
@@ -187,7 +187,26 @@ export default function ProductDetailPage() {
                             ) : (
                                 t("detail.outOfStock")
                             )}
-                        </Button>
+                        </Button> */}
+                        {product.inStock ? (
+                            <Button
+                                size="lg"
+                                className="flex-1 rounded-full text-base"
+                                asChild
+                            >
+                                <Link to={ROUTES.CHECKOUT}>
+                                    {t("detail.buyNow")}
+                                </Link>
+                            </Button>
+                        ) : (
+                            <Button
+                                size="lg"
+                                className="flex-1 rounded-full text-base"
+                                disabled
+                            >
+                                {t("detail.outOfStock")}
+                            </Button>
+                        )}
                         <Button
                             size="lg"
                             variant="outline"

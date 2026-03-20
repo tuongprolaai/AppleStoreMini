@@ -2,7 +2,6 @@ import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
 import { useGetProductsQuery } from "@/store/api/productsApi";
-import { useDebounce } from "@/hooks/useDebounce";
 import ProductCard from "@/components/shared/ProductCard";
 import { ProductGridSkeleton } from "@/components/shared/ProductCardSkeleton";
 import EmptyState from "@/components/shared/EmptyState";
@@ -19,15 +18,13 @@ export default function SearchPage() {
     const [inputValue, setInputValue] = useState(keyword);
     const [page, setPage] = useState(1);
 
-    const debouncedKeyword = useDebounce(keyword, 300);
-
     const { data, isLoading, isFetching } = useGetProductsQuery(
         {
-            search: debouncedKeyword,
+            search: keyword,
             page,
             limit: PAGINATION.DEFAULT_LIMIT,
         },
-        { skip: !debouncedKeyword },
+        { skip: !keyword },
     );
 
     const products = data?.data || [];
@@ -70,7 +67,7 @@ export default function SearchPage() {
                         type="submit"
                         className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full px-6"
                     >
-                        {t("search.placeholder")}
+                        {t("search.submit", { defaultValue: "Tìm kiếm" })}
                     </Button>
                 </div>
             </form>

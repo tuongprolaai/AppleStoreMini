@@ -7,7 +7,6 @@ import {
     Package,
     ShoppingCart,
     Users,
-    Star,
     LogOut,
     Menu,
     X,
@@ -39,7 +38,7 @@ const NAV_ITEMS = [
         end: false,
     },
     { key: "users", href: ROUTES.ADMIN_USERS, icon: Users, end: false },
-    { key: "reviews", href: "/admin/reviews", icon: Star, end: false },
+    // { key: "reviews", href: "/admin/reviews", icon: Star, end: false },
 ];
 
 function SidebarContent({ onClose }) {
@@ -96,7 +95,7 @@ function SidebarContent({ onClose }) {
             <Separator />
 
             {/* User info + logout */}
-            <div className="p-3 space-y-1">
+            <div className="space-y-0.5 p-3">
                 {/* Về store */}
                 <Link
                     to={ROUTES.HOME}

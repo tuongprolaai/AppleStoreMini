@@ -6,6 +6,14 @@ const initialState = {
 
 const getProductId = (product) => product?._id || product?.id;
 
+// Lấy giá hiệu lực: ưu tiên salePrice nếu có và hợp lệ
+const getEffectivePrice = (product) => {
+    if (!product) return 0;
+    const sale = product.salePrice;
+    const original = product.price ?? 0;
+    return sale && sale > 0 && sale < original ? sale : original;
+};
+
 const cartSlice = createSlice({
     name: "cart",
     initialState,
@@ -49,7 +57,6 @@ const cartSlice = createSlice({
             const { productId, selectedColor, selectedStorage, quantity } =
                 action.payload;
 
-            // Nếu quantity <= 0 thì xóa item
             if (quantity <= 0) {
                 state.items = state.items.filter(
                     (item) =>
@@ -91,7 +98,8 @@ export const selectCartItems = (state) => state.cart.items;
 
 export const selectCartTotal = (state) =>
     state.cart.items.reduce(
-        (total, item) => total + (item.product?.price ?? 0) * item.quantity,
+        (total, item) =>
+            total + getEffectivePrice(item.product) * item.quantity,
         0,
     );
 
@@ -99,3 +107,16 @@ export const selectCartCount = (state) =>
     state.cart.items.reduce((total, item) => total + item.quantity, 0);
 
 export const selectCartIsEmpty = (state) => state.cart.items.length === 0;
+
+// Tổng tiết kiệm được (để hiển thị ở CartSummary)
+export const selectCartSavings = (state) =>
+    state.cart.items.reduce((total, item) => {
+        const product = item.product;
+        if (!product) return total;
+        const original = product.price ?? 0;
+        const sale = product.salePrice;
+        if (sale && sale > 0 && sale < original) {
+            return total + (original - sale) * item.quantity;
+        }
+        return total;
+    }, 0);

@@ -6,7 +6,6 @@ export const ROUTES = {
     CART: "/cart",
     CHECKOUT: "/checkout",
     SEARCH: "/search",
-    WISHLIST: "/wishlist",
 
     // Auth
     LOGIN: "/login",
@@ -16,10 +15,12 @@ export const ROUTES = {
 
     // Profile
     PROFILE: "/profile",
+    WISHLIST: "/profile/wishlist",
     ORDERS: "/profile/orders",
     ORDER_DETAIL: (id) => `/profile/orders/${id}`,
     ADDRESSES: "/profile/addresses",
     CHANGE_PASSWORD: "/profile/change-password",
+
     // Admin
     ADMIN: "/admin",
     ADMIN_DASHBOARD: "/admin/dashboard",
@@ -39,6 +40,61 @@ export const CATEGORIES = [
     { label: "Mac", value: "mac", href: "/products?category=mac" },
     { label: "Apple Watch", value: "watch", href: "/products?category=watch" },
     { label: "AirPods", value: "airpods", href: "/products?category=airpods" },
+];
+
+// ── Banner Slides (dùng cho BannerSlider ở HomePage) ──
+export const BANNER_SLIDES = [
+    {
+        id: 1,
+        title: "iPhone 16 Pro",
+        subtitle: "Titanium. Mạnh mẽ. Nhẹ hơn. Pro hơn.",
+        description:
+            "Camera 48MP thế hệ mới. Chip A18 Pro. Thời lượng pin cả ngày.",
+        cta: "Mua ngay",
+        ctaLink: "/products?category=iphone",
+        image: "/images/hero/hero-iphone.jpg",
+        bgFrom: "#1d1d1f",
+        bgTo: "#2d2d2f",
+        textColor: "light", // "light" | "dark"
+    },
+    {
+        id: 2,
+        title: "MacBook Pro",
+        subtitle: "Chip M4. Hiệu năng đỉnh cao.",
+        description: "Màn hình Liquid Retina XDR 16 inch. Pin lên đến 22 giờ.",
+        cta: "Khám phá",
+        ctaLink: "/products?category=mac",
+        image: "/images/hero/hero-mac.jpg",
+        bgFrom: "#f5f5f7",
+        bgTo: "#e8e8ed",
+        textColor: "dark",
+    },
+    {
+        id: 3,
+        title: "iPad Pro",
+        subtitle: "Siêu mỏng. Siêu mạnh.",
+        description:
+            "Chip M4. Màn hình Ultra Retina XDR OLED. Mỏng nhất từ trước đến nay.",
+        cta: "Tìm hiểu thêm",
+        ctaLink: "/products?category=ipad",
+        image: "/images/hero/hero-ipad.jpg",
+        bgFrom: "#1c4ed8",
+        bgTo: "#1e40af",
+        textColor: "light",
+    },
+    {
+        id: 4,
+        title: "Apple Watch Series 10",
+        subtitle: "Lớn hơn. Mỏng hơn. Theo dõi sức khỏe.",
+        description:
+            "Màn hình lớn hơn bao giờ hết. Phát hiện ngưng thở khi ngủ.",
+        cta: "Mua ngay",
+        ctaLink: "/products?category=watch",
+        image: "/images/hero/hero-watch.jpg",
+        bgFrom: "#0f172a",
+        bgTo: "#1e293b",
+        textColor: "light",
+    },
 ];
 
 // ── Sort options ──────────────────────────────────────
@@ -150,6 +206,6 @@ export const REVIEW_SORT_OPTIONS = [
 
 // ── Shipping ──────────────────────────────────────────
 export const SHIPPING = {
-    FREE_THRESHOLD: 500000, // Miễn phí ship đơn từ 500k
-    DEFAULT_FEE: 30000, // Phí ship mặc định 30k
+    FREE_THRESHOLD: 500000,
+    DEFAULT_FEE: 30000,
 };

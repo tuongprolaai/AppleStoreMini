@@ -22,17 +22,15 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = store?.getState()?.auth?.accessToken;
-
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
-
         return config;
     },
     (error) => Promise.reject(error),
 );
 
-// ── Queue xử lý request khi refresh token ──
+// ── Queue xử lý request khi đang refresh token ──
 let isRefreshing = false;
 let failedQueue = [];
 
@@ -41,7 +39,6 @@ const processQueue = (error, token = null) => {
         if (error) prom.reject(error);
         else prom.resolve(token);
     });
-
     failedQueue = [];
 };
 
@@ -57,16 +54,17 @@ axiosInstance.interceptors.response.use(
             return Promise.reject(error);
         }
 
-        const isAuthRequest =
-            originalRequest.url.includes("/login") ||
-            originalRequest.url.includes("/refresh-token");
+        // Không retry các request auth để tránh vòng lặp vô tận
+        const isAuthEndpoint =
+            originalRequest.url?.includes("/auth/login") ||
+            originalRequest.url?.includes("/auth/refresh-token");
 
         if (
             error.response.status === 401 &&
             !originalRequest._retry &&
-            !originalRequest._skipAuthRetry &&
-            !isAuthRequest
+            !isAuthEndpoint
         ) {
+            // Nếu đang refresh, đưa request vào queue chờ
             if (isRefreshing) {
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
@@ -82,28 +80,34 @@ axiosInstance.interceptors.response.use(
             isRefreshing = true;
 
             try {
-                // refresh token bằng httpOnly cookie
+                // Refresh token qua httpOnly cookie
                 const response = await axiosInstance.post(
                     "/auth/refresh-token",
                     null,
-                    { _skipAuthRetry: true },
+                    // Đánh dấu request này là auth endpoint để interceptor bỏ qua
+                    { url: "/auth/refresh-token" },
                 );
 
-                const { accessToken } = response.data.data;
+                const newToken =
+                    response.data?.data?.accessToken ??
+                    response.data?.accessToken;
 
-                store.dispatch(
-                    setCredentials({
-                        accessToken,
-                    }),
-                );
+                if (!newToken) throw new Error("No access token in response");
 
-                processQueue(null, accessToken);
+                store.dispatch(setCredentials({ accessToken: newToken }));
+                processQueue(null, newToken);
 
-                originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+                originalRequest.headers.Authorization = `Bearer ${newToken}`;
                 return axiosInstance(originalRequest);
             } catch (refreshError) {
                 processQueue(refreshError, null);
                 store.dispatch(logout());
+
+                // Redirect về login nếu không phải đang ở trang auth
+                if (!window.location.pathname.startsWith("/login")) {
+                    window.location.href = "/login";
+                }
+
                 return Promise.reject(refreshError);
             } finally {
                 isRefreshing = false;

@@ -33,6 +33,11 @@ export default function CartDrawerItem({ item }) {
         );
     };
 
+    const effectivePrice =
+        item.product.salePrice && item.product.salePrice < item.product.price
+            ? item.product.salePrice
+            : item.product.price;
+
     return (
         <div className="flex gap-4">
             {/* Image */}
@@ -84,7 +89,7 @@ export default function CartDrawerItem({ item }) {
                 {/* Price + Quantity */}
                 <div className="mt-2 flex items-center justify-between">
                     <PriceDisplay
-                        price={item.product.price}
+                        price={effectivePrice}
                         originalPrice={item.product.originalPrice}
                         size="sm"
                     />

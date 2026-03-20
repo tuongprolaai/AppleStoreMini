@@ -1,13 +1,14 @@
+import { Package } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import ProductCard from "@/components/shared/ProductCard";
 import { ProductGridSkeleton } from "@/components/shared/ProductCardSkeleton";
 import EmptyState from "@/components/shared/EmptyState";
-import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 
 export default function ProductGrid({
     products = [],
     isLoading = false,
-    skeletonCount = 8,
+    skeletonCount = 12,
     className,
 }) {
     const { t } = useTranslation("product");
@@ -21,7 +22,7 @@ export default function ProductGrid({
     if (products.length === 0) {
         return (
             <EmptyState
-                icon="📦"
+                icon={Package}
                 title={t("empty.products")}
                 description={t("empty.productsDesc")}
             />
@@ -31,7 +32,7 @@ export default function ProductGrid({
     return (
         <div
             className={cn(
-                "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
+                "grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4",
                 className,
             )}
         >

@@ -1,11 +1,9 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
-import { SlidersHorizontal } from "lucide-react";
-import { useState } from "react";
+import { SlidersHorizontal, SearchX } from "lucide-react";
 import { useGetProductsQuery } from "@/store/api/productsApi";
-import { useGetFeaturedProductsQuery } from "@/store/api/productsApi";
-import ProductCard from "@/components/shared/ProductCard";
-import { ProductGridSkeleton } from "@/components/shared/ProductCardSkeleton";
+import ProductGrid from "@/features/products/components/ProductGrid";
 import EmptyState from "@/components/shared/EmptyState";
 import Breadcrumb from "@/components/shared/Breadcrumb";
 import SectionTitle from "@/components/shared/SectionTitle";
@@ -25,7 +23,6 @@ export default function ProductListPage() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [filterOpen, setFilterOpen] = useState(false);
 
-    // Đọc filter từ URL
     const filters = {
         page: Number(searchParams.get("page")) || PAGINATION.DEFAULT_PAGE,
         limit: Number(searchParams.get("limit")) || PAGINATION.DEFAULT_LIMIT,
@@ -38,7 +35,7 @@ export default function ProductListPage() {
 
     const { data, isLoading, isFetching } = useGetProductsQuery(filters);
 
-    const products = data?.data || [];
+    const products = data?.data?.products ?? data?.data ?? [];
     const pagination = data?.pagination || {};
 
     const updateFilter = (key, value) => {
@@ -48,7 +45,6 @@ export default function ProductListPage() {
         } else {
             params.delete(key);
         }
-        // Reset về page 1 khi đổi filter
         if (key !== "page") params.set("page", "1");
         setSearchParams(params);
     };
@@ -57,150 +53,200 @@ export default function ProductListPage() {
         (c) => c.value === filters.category,
     );
 
+    const totalPages = pagination.totalPages || 1;
+    const currentPage = filters.page;
+
+    const getPageNumbers = () => {
+        const delta = 2;
+        const range = [];
+        for (
+            let i = Math.max(2, currentPage - delta);
+            i <= Math.min(totalPages - 1, currentPage + delta);
+            i++
+        ) {
+            range.push(i);
+        }
+        if (currentPage - delta > 2) range.unshift("...");
+        if (currentPage + delta < totalPages - 1) range.push("...");
+        if (totalPages > 1) {
+            range.unshift(1);
+            range.push(totalPages);
+        } else {
+            range.unshift(1);
+        }
+        return [...new Set(range)];
+    };
+
     return (
         <div className="section-padding py-8 md:py-12">
-            {/* Breadcrumb */}
-            <Breadcrumb
-                items={[
-                    { label: t("page.title"), href: ROUTES.PRODUCTS },
-                    ...(currentCategory
-                        ? [{ label: currentCategory.label }]
-                        : []),
-                ]}
-                className="mb-6"
-            />
+            <div className="mx-auto max-w-7xl">
+                {/* Breadcrumb */}
+                <Breadcrumb
+                    items={[
+                        { label: t("page.title"), href: ROUTES.PRODUCTS },
+                        ...(currentCategory
+                            ? [{ label: currentCategory.label }]
+                            : []),
+                    ]}
+                    className="mb-6"
+                />
 
-            {/* Header */}
-            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <SectionTitle
-                        title={
-                            currentCategory
-                                ? currentCategory.label
-                                : t("page.allProducts")
-                        }
-                    />
-                    {!isLoading && pagination.total > 0 && (
-                        <p className="mt-1 text-sm text-muted-foreground">
-                            {t("page.showing")} {products.length} {t("page.of")}{" "}
-                            {pagination.total} {t("page.results")}
-                        </p>
-                    )}
-                </div>
-
-                {/* Sort + Filter */}
-                <div className="flex items-center gap-2">
-                    {/* Sort dropdown */}
-                    <Select
-                        value={filters.sort}
-                        onValueChange={(val) => updateFilter("sort", val)}
-                    >
-                        <SelectTrigger className="w-48 rounded-full">
-                            <SelectValue placeholder={t("sort.label")} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {SORT_OPTIONS.map((opt) => (
-                                <SelectItem key={opt.value} value={opt.value}>
-                                    {opt.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-
-                    {/* Filter mobile */}
-                    <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
-                        <SheetTrigger asChild>
-                            <Button
-                                variant="outline"
-                                size="icon"
-                                className="rounded-full lg:hidden"
-                            >
-                                <SlidersHorizontal className="h-4 w-4" />
-                            </Button>
-                        </SheetTrigger>
-                        <SheetContent side="left" className="w-80">
-                            <FilterPanel
-                                filters={filters}
-                                onUpdate={updateFilter}
-                            />
-                        </SheetContent>
-                    </Sheet>
-                </div>
-            </div>
-
-            <div className="flex gap-8">
-                {/* Filter sidebar — desktop */}
-                <aside className="hidden w-56 shrink-0 lg:block">
-                    <FilterPanel filters={filters} onUpdate={updateFilter} />
-                </aside>
-
-                {/* Grid */}
-                <div className="min-w-0 flex-1">
-                    {isLoading || isFetching ? (
-                        <ProductGridSkeleton count={PAGINATION.DEFAULT_LIMIT} />
-                    ) : products.length === 0 ? (
-                        <EmptyState
-                            icon="🔍"
-                            title={t("empty.products")}
-                            description={t("empty.productsDesc")}
-                            actionLabel={t("filter.reset")}
-                            onAction={() => setSearchParams({})}
+                {/* Header */}
+                <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <SectionTitle
+                            title={
+                                currentCategory
+                                    ? currentCategory.label
+                                    : t("page.allProducts")
+                            }
                         />
-                    ) : (
-                        <>
-                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                                {products.map((product) => (
-                                    <ProductCard
-                                        key={product.id}
-                                        product={product}
-                                    />
-                                ))}
-                            </div>
+                        {!isLoading && pagination.total > 0 && (
+                            <p className="mt-1 text-sm text-muted-foreground">
+                                {pagination.total} {t("page.results")}
+                            </p>
+                        )}
+                    </div>
 
-                            {/* Pagination */}
-                            {pagination.totalPages > 1 && (
-                                <div className="mt-10 flex items-center justify-center gap-2">
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="rounded-full"
-                                        disabled={filters.page <= 1}
-                                        onClick={() =>
-                                            updateFilter(
-                                                "page",
-                                                filters.page - 1,
-                                            )
-                                        }
+                    {/* Sort + Filter trigger */}
+                    <div className="flex items-center gap-2">
+                        <Select
+                            value={filters.sort}
+                            onValueChange={(val) => updateFilter("sort", val)}
+                        >
+                            <SelectTrigger className="w-44 rounded-full text-sm">
+                                <SelectValue placeholder={t("sort.label")} />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {SORT_OPTIONS.map((opt) => (
+                                    <SelectItem
+                                        key={opt.value}
+                                        value={opt.value}
                                     >
-                                        {t("pagination.prev", { ns: "common" })}
-                                    </Button>
-                                    <span className="text-sm text-muted-foreground">
-                                        {t("pagination.page", { ns: "common" })}{" "}
-                                        {filters.page}{" "}
-                                        {t("pagination.of", { ns: "common" })}{" "}
-                                        {pagination.totalPages}
-                                    </span>
-                                    <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="rounded-full"
-                                        disabled={
-                                            filters.page >=
-                                            pagination.totalPages
-                                        }
-                                        onClick={() =>
-                                            updateFilter(
-                                                "page",
-                                                filters.page + 1,
-                                            )
-                                        }
-                                    >
-                                        {t("pagination.next", { ns: "common" })}
-                                    </Button>
-                                </div>
-                            )}
-                        </>
-                    )}
+                                        {opt.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+
+                        <Sheet open={filterOpen} onOpenChange={setFilterOpen}>
+                            <SheetTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="icon"
+                                    className="rounded-full lg:hidden"
+                                >
+                                    <SlidersHorizontal className="h-4 w-4" />
+                                </Button>
+                            </SheetTrigger>
+                            <SheetContent side="left" className="w-72 p-6">
+                                <FilterPanel
+                                    filters={filters}
+                                    onUpdate={(k, v) => {
+                                        updateFilter(k, v);
+                                        setFilterOpen(false);
+                                    }}
+                                />
+                            </SheetContent>
+                        </Sheet>
+                    </div>
+                </div>
+
+                {/* Content */}
+                <div className="flex gap-6">
+                    {/* Filter sidebar — desktop */}
+                    <aside className="hidden w-52 shrink-0 lg:block">
+                        <FilterPanel
+                            filters={filters}
+                            onUpdate={updateFilter}
+                        />
+                    </aside>
+
+                    {/* Grid + Pagination */}
+                    <div className="min-w-0 flex-1">
+                        {products.length === 0 && !isLoading ? (
+                            <EmptyState
+                                icon={SearchX}
+                                title={t("empty.products")}
+                                description={t("empty.productsDesc")}
+                                actionLabel={t("filter.reset")}
+                                onAction={() => setSearchParams({})}
+                            />
+                        ) : (
+                            <>
+                                <ProductGrid
+                                    products={products}
+                                    isLoading={isLoading || isFetching}
+                                    skeletonCount={PAGINATION.DEFAULT_LIMIT}
+                                />
+
+                                {/* Pagination */}
+                                {!isLoading && totalPages > 1 && (
+                                    <div className="mt-10 flex items-center justify-center gap-1">
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            className="h-9 w-9 rounded-full"
+                                            disabled={currentPage <= 1}
+                                            onClick={() =>
+                                                updateFilter(
+                                                    "page",
+                                                    currentPage - 1,
+                                                )
+                                            }
+                                        >
+                                            ‹
+                                        </Button>
+
+                                        {getPageNumbers().map((page, idx) =>
+                                            page === "..." ? (
+                                                <span
+                                                    key={`ellipsis-${idx}`}
+                                                    className="px-1 text-sm text-muted-foreground"
+                                                >
+                                                    ...
+                                                </span>
+                                            ) : (
+                                                <Button
+                                                    key={page}
+                                                    variant={
+                                                        currentPage === page
+                                                            ? "default"
+                                                            : "outline"
+                                                    }
+                                                    size="icon"
+                                                    className="h-9 w-9 rounded-full text-sm"
+                                                    onClick={() =>
+                                                        updateFilter(
+                                                            "page",
+                                                            page,
+                                                        )
+                                                    }
+                                                >
+                                                    {page}
+                                                </Button>
+                                            ),
+                                        )}
+
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            className="h-9 w-9 rounded-full"
+                                            disabled={currentPage >= totalPages}
+                                            onClick={() =>
+                                                updateFilter(
+                                                    "page",
+                                                    currentPage + 1,
+                                                )
+                                            }
+                                        >
+                                            ›
+                                        </Button>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
@@ -213,18 +259,17 @@ function FilterPanel({ filters, onUpdate }) {
 
     return (
         <div className="space-y-6">
-            {/* Category */}
             <div>
-                <h3 className="mb-3 text-sm font-medium text-foreground">
+                <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                     {t("filter.category")}
                 </h3>
-                <div className="space-y-1">
+                <div className="space-y-0.5">
                     <button
                         onClick={() => onUpdate("category", "")}
                         className={`w-full rounded-lg px-3 py-2 text-left text-sm transition-colors ${
                             !filters.category
                                 ? "bg-accent font-medium text-foreground"
-                                : "text-muted-foreground hover:bg-muted"
+                                : "text-muted-foreground hover:bg-muted hover:text-foreground"
                         }`}
                     >
                         {t("filter.allCategories")}
@@ -236,7 +281,7 @@ function FilterPanel({ filters, onUpdate }) {
                             className={`w-full rounded-lg px-3 py-2 text-left text-sm transition-colors ${
                                 filters.category === cat.value
                                     ? "bg-accent font-medium text-foreground"
-                                    : "text-muted-foreground hover:bg-muted"
+                                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                             }`}
                         >
                             {cat.label}
@@ -245,7 +290,6 @@ function FilterPanel({ filters, onUpdate }) {
                 </div>
             </div>
 
-            {/* Reset */}
             <Button
                 variant="outline"
                 size="sm"

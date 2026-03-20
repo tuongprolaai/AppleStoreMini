@@ -68,7 +68,7 @@ export default function CheckoutPage() {
             >
                 <Link to={ROUTES.CART}>
                     <ChevronLeft className="mr-1 h-4 w-4" />
-                    {t("cart:title", { ns: "cart" })}
+                    {t("title", { ns: "cart" })}
                 </Link>
             </Button>
 
@@ -149,7 +149,11 @@ export default function CheckoutPage() {
                                             </span>
                                             <span className="text-xs font-medium">
                                                 {formatPrice(
-                                                    item.product.price *
+                                                    (item.product.salePrice &&
+                                                    item.product.salePrice <
+                                                        item.product.price
+                                                        ? item.product.salePrice
+                                                        : item.product.price) *
                                                         item.quantity,
                                                 )}
                                             </span>

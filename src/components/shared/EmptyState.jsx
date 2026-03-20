@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 export default function EmptyState({
-    icon,
+    icon: Icon,
     title,
     description,
     actionLabel,
@@ -13,16 +13,14 @@ export default function EmptyState({
     return (
         <div
             className={cn(
-                "flex flex-col items-center justify-center py-16 px-4 text-center",
+                "flex flex-col items-center justify-center px-4 py-16 text-center",
                 className,
             )}
         >
             {/* Icon */}
-            {icon && (
+            {Icon && (
                 <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-                    <span className="text-4xl text-muted-foreground">
-                        {icon}
-                    </span>
+                    <Icon className="h-8 w-8 text-muted-foreground" />
                 </div>
             )}
 
@@ -38,7 +36,7 @@ export default function EmptyState({
                 </p>
             )}
 
-            {/* Action button */}
+            {/* Action */}
             {actionLabel && (onAction || actionHref) && (
                 <Button
                     onClick={onAction}
