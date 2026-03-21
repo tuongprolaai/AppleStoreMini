@@ -147,6 +147,10 @@ export const productSchema = z.object({
         .number()
         .min(1000, { message: "Giá bán phải lớn hơn 1.000đ" }),
     originalPrice: z.coerce.number().optional(),
+    stock: z.coerce
+        .number()
+        .min(0, { message: "Tồn kho không được âm" })
+        .default(0),
     description: z
         .string()
         .min(10, { message: "Mô tả phải có ít nhất 10 ký tự" }),

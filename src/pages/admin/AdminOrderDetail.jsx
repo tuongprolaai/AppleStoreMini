@@ -1,7 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft } from "lucide-react";
-import { useGetOrderByIdQuery } from "@/store/api/ordersApi";
+import { useGetAdminOrderByIdQuery } from "@/store/api/ordersApi";
 import AdminOrderDetailComponent from "@/features/admin/components/orders/AdminOrderDetail";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,7 +11,7 @@ export default function AdminOrderDetail() {
     const { t } = useTranslation("admin");
     const { id } = useParams();
 
-    const { data, isLoading, isError } = useGetOrderByIdQuery(id);
+    const { data, isLoading, isError } = useGetAdminOrderByIdQuery(id);
     const order = data?.data;
 
     if (isLoading) {

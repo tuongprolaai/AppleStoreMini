@@ -12,6 +12,7 @@ export default function ConfirmStep({
     items,
     total,
     shippingFee,
+    discountAmount = 0, // ✅ Thêm prop
     grandTotal,
     onPlaceOrder,
     onBack,
@@ -53,7 +54,11 @@ export default function ConfirmStep({
                     </h3>
                 </div>
                 <p className="text-sm text-foreground">
-                    {t(`payment.${paymentMethod}`)}
+                    {paymentMethod
+                        ? t(`payment.${paymentMethod}`)
+                        : t("payment.unknown", {
+                              defaultValue: "Không xác định",
+                          })}
                 </p>
                 {paymentMethod === PAYMENT_METHODS.COD && (
                     <p className="mt-0.5 text-xs text-muted-foreground">
@@ -62,7 +67,7 @@ export default function ConfirmStep({
                 )}
             </div>
 
-            {/* Order items — dùng OrderItemRow */}
+            {/* Order items */}
             <div className="rounded-2xl border border-border bg-card p-5 md:p-6">
                 <div className="mb-4 flex items-center gap-2">
                     <ShoppingBag className="h-4 w-4 text-muted-foreground" />
@@ -108,6 +113,18 @@ export default function ConfirmStep({
                                 : formatPrice(shippingFee)}
                         </span>
                     </div>
+
+                    {/* ✅ Dòng giảm giá — chỉ hiện khi có coupon */}
+                    {discountAmount > 0 && (
+                        <div className="flex justify-between text-green-600 dark:text-green-400">
+                            <span>
+                                {t("confirm.discount", {
+                                    defaultValue: "Giảm giá",
+                                })}
+                            </span>
+                            <span>-{formatPrice(discountAmount)}</span>
+                        </div>
+                    )}
                 </div>
 
                 <Separator className="my-4" />

@@ -2,7 +2,7 @@ import { Outlet, useLocation } from "react-router-dom";
 import Navbar from "./root/Navbar";
 import Footer from "./root/Footer";
 import CartDrawer from "@/features/cart/components/CartDrawer";
-
+import ScrollToTopButton from "@/components/shared/ScrollToTopButton";
 import ScrollToTop from "@/components/shared/ScrollToTop";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -24,6 +24,7 @@ export default function RootLayout() {
                 <Outlet />
             </main>
             <Footer />
+            <ScrollToTopButton />
             <CartDrawer />
         </div>
     );

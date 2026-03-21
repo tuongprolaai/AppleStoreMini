@@ -1,49 +1,35 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { MessageSquarePlus } from "lucide-react";
 import {
     useGetReviewsQuery,
     useDeleteReviewMutation,
-    useCheckPurchasedQuery,
 } from "@/store/api/reviewsApi";
-import { selectIsAuthenticated, selectCurrentUser } from "@/store/authSlice";
+import { selectCurrentUser } from "@/store/authSlice";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import ProductReviewSummary from "./ProductReviewSummary";
 import ProductReviewItem from "./ProductReviewItem";
-import ReviewForm from "./ReviewForm";
 import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import { toast } from "sonner";
 
 export default function ProductReviews({ product }) {
     const productId = product?._id || product?.id;
     const { t } = useTranslation("product");
-    const isAuthenticated = useSelector(selectIsAuthenticated);
+    const currentUser = useSelector(selectCurrentUser);
 
-    const [showForm, setShowForm] = useState(false);
-    const [editingReview, setEditingReview] = useState(null);
     const [deleteId, setDeleteId] = useState(null);
     const [page, setPage] = useState(1);
 
     const { data, isLoading } = useGetReviewsQuery({
-        productId: productId,
+        productId,
         params: { page, limit: 5 },
-    });
-    const { data: purchasedData } = useCheckPurchasedQuery(productId, {
-        skip: !isAuthenticated,
     });
     const [deleteReview, { isLoading: isDeleting }] = useDeleteReviewMutation();
 
-    const reviews = data?.data || [];
-    const pagination = data?.pagination || {};
-    const isPurchased = purchasedData?.data?.isPurchased || false;
-
-    const handleEdit = (review) => {
-        setEditingReview(review);
-        setShowForm(true);
-    };
+    const reviews = data?.data ?? [];
+    const pagination = data?.pagination ?? {};
 
     const handleDelete = async () => {
         try {
@@ -54,11 +40,6 @@ export default function ProductReviews({ product }) {
         } finally {
             setDeleteId(null);
         }
-    };
-
-    const handleFormSuccess = () => {
-        setShowForm(false);
-        setEditingReview(null);
     };
 
     return (
@@ -77,31 +58,6 @@ export default function ProductReviews({ product }) {
                     />
                     <Separator />
                 </>
-            )}
-
-            {/* Write review button */}
-            {isAuthenticated && isPurchased && !showForm && (
-                <Button
-                    variant="outline"
-                    className="rounded-full"
-                    onClick={() => setShowForm(true)}
-                >
-                    <MessageSquarePlus className="mr-2 h-4 w-4" />
-                    {t("review.writeReview")}
-                </Button>
-            )}
-
-            {/* Review form */}
-            {showForm && (
-                <ReviewForm
-                    productId={product.id}
-                    review={editingReview}
-                    onSuccess={handleFormSuccess}
-                    onCancel={() => {
-                        setShowForm(false);
-                        setEditingReview(null);
-                    }}
-                />
             )}
 
             {/* Reviews list */}
@@ -132,10 +88,12 @@ export default function ProductReviews({ product }) {
             ) : (
                 <div className="space-y-6">
                     {reviews.map((review, index) => (
-                        <div key={review.id}>
+                        <div key={review._id || review.id}>
                             <ProductReviewItem
                                 review={review}
-                                onEdit={handleEdit}
+                                currentUserId={
+                                    currentUser?._id || currentUser?.id
+                                }
                                 onDelete={setDeleteId}
                             />
                             {index < reviews.length - 1 && (

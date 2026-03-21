@@ -59,6 +59,10 @@ export const ordersApi = baseApi.injectEndpoints({
                 params,
             }),
         }),
+        getAdminOrderById: builder.query({
+            query: (id) => `/admin/orders/${id}`,
+            providesTags: (_, __, id) => [{ type: "Order", id }],
+        }),
     }),
 });
 
@@ -69,6 +73,7 @@ export const {
     useCancelOrderMutation,
     useConfirmDeliveredMutation,
     useGetAllOrdersQuery,
+    useGetAdminOrderByIdQuery,
     useUpdateOrderStatusMutation,
     useGetRevenueStatsQuery,
 } = ordersApi;

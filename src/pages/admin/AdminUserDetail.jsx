@@ -16,6 +16,7 @@ export default function AdminUserDetail() {
     const { data: ordersData } = useGetAllOrdersQuery({
         page: 1,
         limit: 5,
+        userId: id,
     });
 
     const user = data?.data;

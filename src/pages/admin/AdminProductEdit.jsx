@@ -2,7 +2,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft } from "lucide-react";
 import {
-    useGetProductBySlugQuery,
+    useGetProductByIdQuery,
     useUpdateProductMutation,
 } from "@/store/api/productsApi";
 import AdminProductForm from "@/features/admin/components/products/AdminProductForm";
@@ -16,7 +16,7 @@ export default function AdminProductEdit() {
     const { id } = useParams();
     const navigate = useNavigate();
 
-    const { data, isLoading, isError } = useGetProductBySlugQuery(id);
+    const { data, isLoading, isError } = useGetProductByIdQuery(id);
     const [updateProduct, { isLoading: isUpdating }] =
         useUpdateProductMutation();
 
@@ -25,7 +25,6 @@ export default function AdminProductEdit() {
     const handleSubmit = async (values) => {
         try {
             await updateProduct({ id, ...values }).unwrap();
-
             toast.success(t("product.updateSuccess"));
             navigate(ROUTES.ADMIN_PRODUCTS);
         } catch (error) {
@@ -82,7 +81,7 @@ export default function AdminProductEdit() {
                         to={ROUTES.PRODUCT_DETAIL(product.slug)}
                         target="_blank"
                     >
-                        {t("order.viewDetail")}
+                        {t("product.preview", { defaultValue: "Xem trang" })}
                     </Link>
                 </Button>
             </div>

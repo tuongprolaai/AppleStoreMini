@@ -94,5 +94,10 @@
         "totalAmount": "Total amount",
         "search": "Search orders...",
         "filterStatus": "Filter by status"
+    },
+    "review": {
+        "pending": "Pending review:",
+        "unblock": "Unblock",
+        "block": "Block"
     }
 }

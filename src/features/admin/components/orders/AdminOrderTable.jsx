@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 import OrderStatusBadge from "@/features/orders/components/OrderStatusBadge";
 import { toast } from "sonner";
-import { formatPrice, formatDateTime, formatNumber } from "@/lib/utils";
+import { formatPrice, formatDateTime } from "@/lib/utils";
 import { ROUTES, ORDER_STATUS, PAGINATION } from "@/lib/constants";
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -162,7 +162,7 @@ export default function AdminOrderTable() {
                             </TableRow>
                         ) : (
                             orders.map((order) => (
-                                <TableRow key={order.id}>
+                                <TableRow key={order._id || order.id}>
                                     <TableCell>
                                         <span className="font-mono text-sm font-medium text-foreground">
                                             #{order.code}
@@ -222,18 +222,21 @@ export default function AdminOrderTable() {
                                                     size="sm"
                                                     className="rounded-full text-xs"
                                                     disabled={
-                                                        updatingId === order.id
+                                                        updatingId ===
+                                                        (order._id || order.id)
                                                     }
                                                     onClick={() =>
                                                         handleUpdateStatus(
-                                                            order.id,
+                                                            order._id ||
+                                                                order.id,
                                                             NEXT_STATUS[
                                                                 order.status
                                                             ],
                                                         )
                                                     }
                                                 >
-                                                    {updatingId === order.id
+                                                    {updatingId ===
+                                                    (order._id || order.id)
                                                         ? t("table.loading")
                                                         : t(
                                                               `order.status.${NEXT_STATUS[order.status]}`,
@@ -249,7 +252,7 @@ export default function AdminOrderTable() {
                                             >
                                                 <Link
                                                     to={ROUTES.ADMIN_ORDER_DETAIL(
-                                                        order.id,
+                                                        order._id || order.id,
                                                     )}
                                                 >
                                                     <Eye className="h-4 w-4" />

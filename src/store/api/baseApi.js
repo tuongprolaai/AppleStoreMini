@@ -77,6 +77,12 @@ export const baseApi = createApi({
         "Profile",
         "Addresses",
         "Wishlist",
+        "Coupons",
+        "Coupon",
+        "Categories",
+        "News",
+        "NewsItem",
+        "NewsComments",
     ],
     endpoints: () => ({}),
 });

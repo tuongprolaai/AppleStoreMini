@@ -22,6 +22,7 @@ import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/lib/constants";
 import { logout, selectCurrentUser } from "@/store/authSlice";
+import { MessageSquare, Tag, LayoutGrid, Newspaper } from "lucide-react";
 
 const NAV_ITEMS = [
     {
@@ -38,7 +39,15 @@ const NAV_ITEMS = [
         end: false,
     },
     { key: "users", href: ROUTES.ADMIN_USERS, icon: Users, end: false },
-    // { key: "reviews", href: "/admin/reviews", icon: Star, end: false },
+    { key: "reviews", href: "/admin/reviews", icon: MessageSquare, end: false },
+    { key: "coupons", href: "/admin/coupons", icon: Tag, end: false },
+    {
+        key: "categories",
+        href: "/admin/categories",
+        icon: LayoutGrid,
+        end: false,
+    },
+    { key: "news", href: "/admin/news", icon: Newspaper, end: false },
 ];
 
 function SidebarContent({ onClose }) {

@@ -20,7 +20,13 @@ import {
 import StarRating from "@/components/shared/StarRating";
 import { toast } from "sonner";
 
-export default function ReviewForm({ productId, review, onSuccess, onCancel }) {
+export default function ReviewForm({
+    productId,
+    orderId,
+    review,
+    onSuccess,
+    onCancel,
+}) {
     const { t } = useTranslation("product");
     const isEditing = !!review;
     const [createReview, { isLoading: isCreating }] = useCreateReviewMutation();
@@ -47,14 +53,21 @@ export default function ReviewForm({ productId, review, onSuccess, onCancel }) {
     const onSubmit = async (values) => {
         try {
             if (isEditing) {
-                await updateReview({ reviewId: review.id, ...values }).unwrap();
+                await updateReview({
+                    reviewId: review._id || review.id,
+                    ...values,
+                }).unwrap();
             } else {
-                await createReview({ productId, ...values }).unwrap();
+                await createReview({
+                    productId,
+                    ...(orderId && { orderId }),
+                    ...values,
+                }).unwrap();
             }
 
             toast.success(t("review.success"));
             form.reset();
-            onSuccess?.();
+            onSuccess?.(values); // trả về data để OrderCard lưu vào reviewedMap
         } catch {
             toast.error(t("status.error", { ns: "common" }));
         }
@@ -62,10 +75,7 @@ export default function ReviewForm({ productId, review, onSuccess, onCancel }) {
 
     return (
         <Form {...form}>
-            <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4 rounded-xl border border-border bg-muted/20 p-4"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 {/* Rating */}
                 <FormField
                     control={form.control}

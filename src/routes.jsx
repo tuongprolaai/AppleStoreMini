@@ -52,6 +52,15 @@ import AdminOrderList from "@/pages/admin/AdminOrderList";
 import AdminOrderDetail from "@/pages/admin/AdminOrderDetail";
 import AdminUserList from "@/pages/admin/AdminUserList";
 import AdminUserDetail from "@/pages/admin/AdminUserDetail";
+import AdminLoginPage from "./pages/admin/AdminLoginPage";
+import AdminReviewPage from "./pages/admin/AdminReviewPage";
+import AdminCouponPage from "@/pages/admin/AdminCouponPage";
+import AdminCategoryPage from "@/pages/admin/AdminCategoryPage";
+import NewsPage from "./pages/NewsPage";
+import NewsDetailPage from "./pages/NewsDetailPage";
+import AdminNewsPage from "./pages/admin/AdminNewsPage";
+import AdminNewsCreate from "./pages/admin/AdminNewsCreate";
+import AdminNewsEdit from "./pages/admin/AdminNewsEdit";
 
 export const router = createBrowserRouter([
     // ── Public ───────────────────────────────────────────
@@ -70,6 +79,9 @@ export const router = createBrowserRouter([
             { path: "return", element: <ReturnPolicyPage /> },
             { path: "privacy", element: <PrivacyPage /> },
             { path: "terms", element: <TermsPage /> },
+            { path: "news", element: <NewsPage /> },
+            { path: "news/:slug", element: <NewsDetailPage /> },
+
             // ── Profile ──────────────────────────────────────────
             {
                 path: "profile",
@@ -158,6 +170,11 @@ export const router = createBrowserRouter([
 
     // ── Admin ─────────────────────────────────────────────
     {
+        path: "admin/login",
+        element: <AdminLoginPage />,
+    },
+
+    {
         path: "admin",
         element: (
             <AdminRoute>
@@ -168,12 +185,18 @@ export const router = createBrowserRouter([
             { index: true, element: <Navigate to="dashboard" replace /> },
             { path: "dashboard", element: <AdminDashboard /> },
             { path: "products", element: <AdminProductList /> },
-            { path: "products/new", element: <AdminProductCreate /> },
+            { path: "products/create", element: <AdminProductCreate /> },
             { path: "products/:id/edit", element: <AdminProductEdit /> },
             { path: "orders", element: <AdminOrderList /> },
             { path: "orders/:id", element: <AdminOrderDetail /> },
             { path: "users", element: <AdminUserList /> },
             { path: "users/:id", element: <AdminUserDetail /> },
+            { path: "reviews", element: <AdminReviewPage /> },
+            { path: "coupons", element: <AdminCouponPage /> },
+            { path: "categories", element: <AdminCategoryPage /> },
+            { path: "news", element: <AdminNewsPage /> },
+            { path: "news/create", element: <AdminNewsCreate /> },
+            { path: "news/:id/edit", element: <AdminNewsEdit /> },
         ],
     },
 

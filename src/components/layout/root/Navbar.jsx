@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { Menu, Search, X } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -7,27 +7,24 @@ import MegaMenu from "./MegaMenu";
 import NavbarActions from "./NavbarActions";
 import NavbarMobile from "./NavbarMobile";
 import NavbarSearch from "./NavbarSearch";
-
 import {
     toggleMobileMenu,
     selectMobileMenuOpen,
     toggleSearch,
     selectSearchOpen,
 } from "@/store/uiSlice";
-
 import { useScrolled } from "@/hooks/useScrollToTop";
 import { CATEGORIES, ROUTES } from "@/lib/constants";
 import { cn } from "@/lib/utils";
-
-// import logo SVG
 import appleLogo from "@/assets/images/icons/apple.svg";
+
+// Link đơn giản không có dropdown
+const SIMPLE_NAV_LINKS = [{ label: "Tin tức", href: "/news" }];
 
 export default function Navbar() {
     const dispatch = useDispatch();
-
     const mobileOpen = useSelector(selectMobileMenuOpen);
     const searchOpen = useSelector(selectSearchOpen);
-
     const isScrolled = useScrolled(10);
 
     return (
@@ -44,10 +41,11 @@ export default function Navbar() {
                     {/* ── Left — Logo + Nav ── */}
                     <div
                         className={cn(
-                            "flex items-center gap-8 transition-all duration-200",
+                            "flex items-center gap-6 transition-all duration-200",
                             searchOpen && "hidden md:flex",
                         )}
                     >
+                        {/* Logo */}
                         <Link
                             to={ROUTES.HOME}
                             className="flex shrink-0 items-center transition-opacity hover:opacity-70"
@@ -58,9 +56,33 @@ export default function Navbar() {
                                 className="h-6 w-6 dark:invert"
                             />
                         </Link>
+
+                        {/* Desktop nav */}
                         <nav className="hidden items-center gap-1 md:flex">
+                            {/* Category mega menus */}
                             {CATEGORIES.map((cat) => (
                                 <MegaMenu key={cat.value} category={cat} />
+                            ))}
+
+                            {/* Divider */}
+                            <div className="mx-1 h-4 w-px bg-border" />
+
+                            {/* Simple links */}
+                            {SIMPLE_NAV_LINKS.map((link) => (
+                                <NavLink
+                                    key={link.href}
+                                    to={link.href}
+                                    className={({ isActive }) =>
+                                        cn(
+                                            "rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
+                                            isActive
+                                                ? "bg-muted text-foreground"
+                                                : "text-muted-foreground hover:text-foreground",
+                                        )
+                                    }
+                                >
+                                    {link.label}
+                                </NavLink>
                             ))}
                         </nav>
                     </div>

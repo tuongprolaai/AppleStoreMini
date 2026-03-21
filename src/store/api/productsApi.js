@@ -12,6 +12,12 @@ export const productsApi = baseApi.injectEndpoints({
             providesTags: (_, __, slug) => [{ type: "Product", id: slug }],
         }),
 
+        // ✅ Thêm mới — dùng cho AdminProductEdit
+        getProductById: builder.query({
+            query: (id) => `/products/${id}`,
+            providesTags: (_, __, id) => [{ type: "Product", id }],
+        }),
+
         getFeaturedProducts: builder.query({
             query: (limit = 8) => ({
                 url: "/products/featured",
@@ -88,6 +94,7 @@ export const productsApi = baseApi.injectEndpoints({
 export const {
     useGetProductsQuery,
     useGetProductBySlugQuery,
+    useGetProductByIdQuery,
     useGetFeaturedProductsQuery,
     useGetNewProductsQuery,
     useGetProductsByCategoryQuery,

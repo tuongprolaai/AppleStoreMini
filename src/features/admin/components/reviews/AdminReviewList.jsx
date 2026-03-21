@@ -1,0 +1,390 @@
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Search, Star, Trash2, Eye, EyeOff } from "lucide-react";
+import {
+    useGetAllReviewsQuery,
+    useDeleteReviewMutation,
+    useToggleReviewVisibilityMutation,
+} from "@/store/api/reviewsApi";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import ConfirmDialog from "@/components/shared/ConfirmDialog";
+import { toast } from "sonner";
+import { formatDateTime } from "@/lib/utils";
+import { useDebounce } from "@/hooks/useDebounce";
+import { PAGINATION } from "@/lib/constants";
+import { useSearchParams } from "react-router-dom";
+import { cn } from "@/lib/utils";
+
+const RATING_OPTIONS = [
+    { value: "all", label: "Tất cả" },
+    { value: "5", label: "5 sao" },
+    { value: "4", label: "4 sao" },
+    { value: "3", label: "3 sao" },
+    { value: "2", label: "2 sao" },
+    { value: "1", label: "1 sao" },
+];
+
+function StarDisplay({ rating }) {
+    return (
+        <div className="flex items-center gap-0.5">
+            {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                    key={star}
+                    className={cn(
+                        "h-3.5 w-3.5",
+                        star <= rating
+                            ? "fill-amber-400 text-amber-400"
+                            : "fill-muted text-muted",
+                    )}
+                />
+            ))}
+        </div>
+    );
+}
+
+export default function AdminReviewList() {
+    const { t } = useTranslation("admin");
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchInput, setSearchInput] = useState(
+        searchParams.get("search") || "",
+    );
+    const [deleteId, setDeleteId] = useState(null);
+
+    const debouncedSearch = useDebounce(searchInput, 400);
+
+    const filters = {
+        page: Number(searchParams.get("page")) || 1,
+        limit: PAGINATION.DEFAULT_LIMIT,
+        rating: searchParams.get("rating") || undefined,
+        search: debouncedSearch || undefined,
+    };
+
+    const { data, isLoading } = useGetAllReviewsQuery(filters);
+    const [deleteReview, { isLoading: isDeleting }] = useDeleteReviewMutation();
+    const [toggleVisibility, { isLoading: isToggling }] =
+        useToggleReviewVisibilityMutation();
+
+    const reviews = data?.data || [];
+    const pagination = data?.pagination || {};
+
+    const updateParam = (key, value) => {
+        const params = new URLSearchParams(searchParams);
+        if (value && value !== "all") {
+            params.set(key, value);
+        } else {
+            params.delete(key);
+        }
+        if (key !== "page") params.set("page", "1");
+        setSearchParams(params);
+    };
+
+    const handleDelete = async () => {
+        try {
+            await deleteReview(deleteId).unwrap();
+            toast.success("Đã xóa đánh giá");
+        } catch {
+            toast.error(t("status.error", { ns: "common" }));
+        } finally {
+            setDeleteId(null);
+        }
+    };
+
+    const handleToggleVisibility = async (review) => {
+        const reviewId = review._id || review.id;
+        try {
+            await toggleVisibility(reviewId).unwrap();
+            toast.success(
+                review.isVisible ? "Đã ẩn đánh giá" : "Đã hiện đánh giá",
+            );
+        } catch {
+            toast.error(t("status.error", { ns: "common" }));
+        }
+    };
+
+    return (
+        <div className="space-y-4">
+            {/* Filters */}
+            <div className="flex flex-wrap items-center gap-3">
+                <div className="relative max-w-xs min-w-[200px] flex-1">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                        placeholder="Tìm sản phẩm hoặc người dùng..."
+                        value={searchInput}
+                        onChange={(e) => setSearchInput(e.target.value)}
+                        className="rounded-full pl-9"
+                    />
+                </div>
+                <Select
+                    value={searchParams.get("rating") || "all"}
+                    onValueChange={(val) => updateParam("rating", val)}
+                >
+                    <SelectTrigger className="w-36 rounded-full">
+                        <SelectValue placeholder="Lọc sao" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {RATING_OPTIONS.map((opt) => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+
+            {/* Table */}
+            <div className="overflow-hidden rounded-xl border border-border bg-card">
+                <Table>
+                    <TableHeader>
+                        <TableRow className="hover:bg-transparent">
+                            <TableHead>Người dùng</TableHead>
+                            <TableHead>Sản phẩm</TableHead>
+                            <TableHead>Đánh giá</TableHead>
+                            <TableHead>Nội dung</TableHead>
+                            <TableHead>Trạng thái</TableHead>
+                            <TableHead>Ngày tạo</TableHead>
+                            <TableHead className="text-right">
+                                {t("table.actions")}
+                            </TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {isLoading ? (
+                            [...Array(6)].map((_, i) => (
+                                <TableRow key={i}>
+                                    {[...Array(7)].map((_, j) => (
+                                        <TableCell key={j}>
+                                            <Skeleton className="h-5 w-full" />
+                                        </TableCell>
+                                    ))}
+                                </TableRow>
+                            ))
+                        ) : reviews.length === 0 ? (
+                            <TableRow>
+                                <TableCell
+                                    colSpan={7}
+                                    className="py-12 text-center text-muted-foreground"
+                                >
+                                    {t("table.noData")}
+                                </TableCell>
+                            </TableRow>
+                        ) : (
+                            reviews.map((review) => {
+                                const reviewId = review._id || review.id;
+                                return (
+                                    <TableRow key={reviewId}>
+                                        {/* User */}
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                <Avatar className="h-7 w-7">
+                                                    <AvatarImage
+                                                        src={
+                                                            review.user?.avatar
+                                                        }
+                                                        alt={
+                                                            review.user
+                                                                ?.fullName
+                                                        }
+                                                    />
+                                                    <AvatarFallback className="text-xs">
+                                                        {review.user?.fullName
+                                                            ?.charAt(0)
+                                                            ?.toUpperCase() ||
+                                                            "U"}
+                                                    </AvatarFallback>
+                                                </Avatar>
+                                                <div className="min-w-0">
+                                                    <p className="truncate text-sm font-medium text-foreground">
+                                                        {review.user?.fullName}
+                                                    </p>
+                                                    <p className="truncate text-xs text-muted-foreground">
+                                                        {review.user?.email}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+
+                                        {/* Product */}
+                                        <TableCell>
+                                            <div className="flex items-center gap-2">
+                                                {review.product
+                                                    ?.images?.[0] && (
+                                                    <div className="h-8 w-8 shrink-0 overflow-hidden rounded-lg bg-muted/30 p-0.5">
+                                                        <img
+                                                            src={
+                                                                review.product
+                                                                    .images[0]
+                                                            }
+                                                            alt={
+                                                                review.product
+                                                                    ?.name
+                                                            }
+                                                            className="h-full w-full object-contain"
+                                                        />
+                                                    </div>
+                                                )}
+                                                <p className="max-w-[140px] truncate text-sm text-foreground">
+                                                    {review.product?.name}
+                                                </p>
+                                            </div>
+                                        </TableCell>
+
+                                        {/* Rating */}
+                                        <TableCell>
+                                            <StarDisplay
+                                                rating={review.rating}
+                                            />
+                                        </TableCell>
+
+                                        {/* Comment */}
+                                        <TableCell>
+                                            <p className="max-w-[200px] truncate text-sm text-muted-foreground">
+                                                {review.comment || (
+                                                    <span className="italic">
+                                                        Không có nhận xét
+                                                    </span>
+                                                )}
+                                            </p>
+                                        </TableCell>
+
+                                        {/* Visibility */}
+                                        <TableCell>
+                                            <Badge
+                                                className={
+                                                    review.isVisible !== false
+                                                        ? "bg-green-100 text-green-700 hover:bg-green-100 dark:bg-green-950/30 dark:text-green-400"
+                                                        : "bg-muted text-muted-foreground hover:bg-muted"
+                                                }
+                                            >
+                                                {review.isVisible !== false
+                                                    ? "Hiển thị"
+                                                    : "Đã ẩn"}
+                                            </Badge>
+                                        </TableCell>
+
+                                        {/* Date */}
+                                        <TableCell>
+                                            <span className="text-sm text-muted-foreground">
+                                                {formatDateTime(
+                                                    review.createdAt,
+                                                )}
+                                            </span>
+                                        </TableCell>
+
+                                        {/* Actions */}
+                                        <TableCell className="text-right">
+                                            <div className="flex items-center justify-end gap-1">
+                                                {/* Toggle visibility */}
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                                                    disabled={isToggling}
+                                                    onClick={() =>
+                                                        handleToggleVisibility(
+                                                            review,
+                                                        )
+                                                    }
+                                                    title={
+                                                        review.isVisible !==
+                                                        false
+                                                            ? "Ẩn đánh giá"
+                                                            : "Hiện đánh giá"
+                                                    }
+                                                >
+                                                    {review.isVisible !==
+                                                    false ? (
+                                                        <EyeOff className="h-4 w-4" />
+                                                    ) : (
+                                                        <Eye className="h-4 w-4" />
+                                                    )}
+                                                </Button>
+
+                                                {/* Delete */}
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                                                    onClick={() =>
+                                                        setDeleteId(reviewId)
+                                                    }
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })
+                        )}
+                    </TableBody>
+                </Table>
+            </div>
+
+            {/* Pagination */}
+            {pagination.totalPages > 1 && (
+                <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">
+                        {t("table.rowsPerPage")} {PAGINATION.DEFAULT_LIMIT}
+                    </p>
+                    <div className="flex items-center gap-2">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="rounded-full"
+                            disabled={filters.page <= 1}
+                            onClick={() =>
+                                updateParam("page", filters.page - 1)
+                            }
+                        >
+                            {t("pagination.prev", { ns: "common" })}
+                        </Button>
+                        <span className="text-sm text-muted-foreground">
+                            {filters.page} {t("table.of")}{" "}
+                            {pagination.totalPages}
+                        </span>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="rounded-full"
+                            disabled={filters.page >= pagination.totalPages}
+                            onClick={() =>
+                                updateParam("page", filters.page + 1)
+                            }
+                        >
+                            {t("pagination.next", { ns: "common" })}
+                        </Button>
+                    </div>
+                </div>
+            )}
+
+            {/* Confirm delete */}
+            <ConfirmDialog
+                open={!!deleteId}
+                onOpenChange={(open) => !open && setDeleteId(null)}
+                title="Xóa đánh giá"
+                description="Bạn có chắc muốn xóa đánh giá này? Hành động này không thể hoàn tác."
+                onConfirm={handleDelete}
+                isLoading={isDeleting}
+            />
+        </div>
+    );
+}

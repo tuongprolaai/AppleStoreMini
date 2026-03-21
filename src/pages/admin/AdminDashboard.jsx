@@ -9,15 +9,16 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetRevenueStatsQuery } from "@/store/api/ordersApi";
-import { useGetAllOrdersQuery } from "@/store/api/ordersApi";
+import {
+    useGetRevenueStatsQuery,
+    useGetAllOrdersQuery,
+} from "@/store/api/ordersApi";
 import { useGetAllUsersQuery } from "@/store/api/usersApi";
 import { useGetProductsQuery } from "@/store/api/productsApi";
 import RevenueChart from "@/features/admin/components/dashboard/RevenueChart";
 import RecentOrders from "@/features/admin/components/dashboard/RecentOrders";
 import TopProducts from "@/features/admin/components/dashboard/TopProducts";
-import { formatPrice, formatNumber } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { formatPrice, formatNumber, cn } from "@/lib/utils";
 
 export default function AdminDashboard() {
     const { t } = useTranslation("admin");

@@ -42,7 +42,7 @@ export default function AdminOrderDetail({ order }) {
 
                 {/* Status update */}
                 <AdminOrderStatusUpdate
-                    orderId={order.id}
+                    orderId={order._id || order.id}
                     currentStatus={order.status}
                 />
             </div>

@@ -13,6 +13,7 @@ import {
     LogIn,
     UserPlus,
     ChevronRight,
+    Newspaper,
 } from "lucide-react";
 
 export default function NavbarMobile() {
@@ -87,6 +88,25 @@ export default function NavbarMobile() {
                             className="flex items-center rounded-xl px-3 py-2.5 text-sm text-apple-blue transition-colors hover:bg-muted"
                         >
                             {t("btn.viewAll")}
+                        </Link>
+                    </div>
+                </div>
+
+                <Separator />
+
+                {/* ✅ Khám phá */}
+                <div className="p-3">
+                    <p className="mb-2 px-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                        {t("nav.explore", { defaultValue: "Khám phá" })}
+                    </p>
+                    <div className="space-y-0.5">
+                        <Link
+                            to="/news"
+                            onClick={handleClose}
+                            className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                        >
+                            <Newspaper className="h-4 w-4" />
+                            Tin tức
                         </Link>
                     </div>
                 </div>

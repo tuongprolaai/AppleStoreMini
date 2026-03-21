@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ROUTES, CATEGORIES } from "@/lib/constants";
+import { ROUTES } from "@/lib/constants";
 
 const FOOTER_LINKS = [
     {
@@ -14,17 +14,18 @@ const FOOTER_LINKS = [
         ],
     },
     {
-        titleKey: "footer.support",
+        titleKey: "footer.explore",
         links: [
-            { labelKey: "footer.warranty", href: "/warranty" },
-            { labelKey: "footer.return", href: "/return" },
+            { label: "Tin tức", href: "/news" }, // ✅ Thêm
+            { labelKey: "footer.about", href: "/about" },
             { labelKey: "footer.contact", href: "/contact" },
         ],
     },
     {
-        titleKey: "footer.about",
+        titleKey: "footer.support",
         links: [
-            { labelKey: "footer.about", href: "/about" },
+            { labelKey: "footer.warranty", href: "/warranty" },
+            { labelKey: "footer.return", href: "/return" },
             { labelKey: "footer.privacy", href: "/privacy" },
             { labelKey: "footer.terms", href: "/terms" },
         ],
@@ -103,7 +104,12 @@ export default function Footer() {
                         {FOOTER_LINKS.map((col) => (
                             <div key={col.titleKey}>
                                 <h3 className="mb-4 text-sm font-semibold text-foreground">
-                                    {t(col.titleKey)}
+                                    {t(col.titleKey, {
+                                        defaultValue:
+                                            col.titleKey === "footer.explore"
+                                                ? "Khám phá"
+                                                : col.titleKey,
+                                    })}
                                 </h3>
                                 <ul className="space-y-2.5">
                                     {col.links.map((link, index) => (

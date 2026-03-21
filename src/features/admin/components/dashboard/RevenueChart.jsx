@@ -1,9 +1,18 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import {
+    AreaChart,
+    Area,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    ResponsiveContainer,
+} from "recharts";
 import { useGetRevenueStatsQuery } from "@/store/api/ordersApi";
 import { Skeleton } from "@/components/ui/skeleton";
-import { formatPrice } from "@/lib/utils";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { formatPrice } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
 const PERIODS = [
@@ -12,14 +21,31 @@ const PERIODS = [
     { value: "year", labelKey: "dashboard.year" },
 ];
 
+// Custom tooltip hiển thị đúng format VND
+function CustomTooltip({ active, payload, label }) {
+    if (!active || !payload?.length) return null;
+
+    return (
+        <div className="rounded-xl border border-border bg-popover px-3 py-2 shadow-md">
+            <p className="mb-1 text-xs text-muted-foreground">{label}</p>
+            <p className="text-sm font-semibold text-foreground">
+                {formatPrice(payload[0]?.value || 0)}
+            </p>
+            {payload[1] && (
+                <p className="text-xs text-muted-foreground">
+                    {payload[1].name}: {payload[1].value}
+                </p>
+            )}
+        </div>
+    );
+}
+
 export default function RevenueChart() {
     const { t } = useTranslation("admin");
     const [period, setPeriod] = useState("month");
 
     const { data, isLoading } = useGetRevenueStatsQuery({ period });
     const chartData = data?.data?.chart || [];
-
-    const maxValue = Math.max(...chartData.map((d) => d.revenue || 0), 1);
 
     if (isLoading) {
         return (
@@ -64,45 +90,85 @@ export default function RevenueChart() {
                     </p>
                 </div>
             ) : (
-                <div className="h-[280px]">
-                    <div className="flex h-full items-end gap-1.5">
-                        {chartData.map((item, index) => {
-                            const heightPct = (item.revenue / maxValue) * 100;
+                <ResponsiveContainer width="100%" height={280}>
+                    <AreaChart
+                        data={chartData}
+                        margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+                    >
+                        <defs>
+                            <linearGradient
+                                id="revenueGradient"
+                                x1="0"
+                                y1="0"
+                                x2="0"
+                                y2="1"
+                            >
+                                <stop
+                                    offset="5%"
+                                    stopColor="hsl(var(--foreground))"
+                                    stopOpacity={0.15}
+                                />
+                                <stop
+                                    offset="95%"
+                                    stopColor="hsl(var(--foreground))"
+                                    stopOpacity={0}
+                                />
+                            </linearGradient>
+                        </defs>
 
-                            return (
-                                <div
-                                    key={index}
-                                    className="group relative flex flex-1 flex-col items-center gap-1"
-                                >
-                                    {/* Tooltip */}
-                                    <div className="absolute bottom-full mb-2 hidden rounded-lg border border-border bg-popover px-2.5 py-1.5 text-xs shadow-md group-hover:block">
-                                        <p className="font-medium text-foreground">
-                                            {formatPrice(item.revenue)}
-                                        </p>
-                                        <p className="text-muted-foreground">
-                                            {item.label}
-                                        </p>
-                                    </div>
+                        <CartesianGrid
+                            strokeDasharray="3 3"
+                            stroke="hsl(var(--border))"
+                            vertical={false}
+                        />
 
-                                    {/* Bar */}
-                                    <div className="w-full flex-1 rounded-t-md bg-muted/30">
-                                        <div
-                                            className="w-full rounded-t-md bg-foreground/80 transition-all duration-500 group-hover:bg-foreground"
-                                            style={{
-                                                height: `${Math.max(heightPct, 2)}%`,
-                                            }}
-                                        />
-                                    </div>
+                        <XAxis
+                            dataKey="label"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{
+                                fontSize: 11,
+                                fill: "hsl(var(--muted-foreground))",
+                            }}
+                            dy={8}
+                        />
 
-                                    {/* Label */}
-                                    <span className="text-[10px] text-muted-foreground">
-                                        {item.label}
-                                    </span>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
+                        <YAxis
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{
+                                fontSize: 11,
+                                fill: "hsl(var(--muted-foreground))",
+                            }}
+                            tickFormatter={(value) => {
+                                if (value >= 1_000_000_000)
+                                    return `${(value / 1_000_000_000).toFixed(1)}B`;
+                                if (value >= 1_000_000)
+                                    return `${(value / 1_000_000).toFixed(0)}M`;
+                                if (value >= 1_000)
+                                    return `${(value / 1_000).toFixed(0)}K`;
+                                return value;
+                            }}
+                            width={56}
+                        />
+
+                        <Tooltip content={<CustomTooltip />} />
+
+                        <Area
+                            type="monotone"
+                            dataKey="revenue"
+                            stroke="hsl(var(--foreground))"
+                            strokeWidth={2}
+                            fill="url(#revenueGradient)"
+                            dot={false}
+                            activeDot={{
+                                r: 4,
+                                fill: "hsl(var(--foreground))",
+                                strokeWidth: 0,
+                            }}
+                        />
+                    </AreaChart>
+                </ResponsiveContainer>
             )}
 
             {/* Summary */}

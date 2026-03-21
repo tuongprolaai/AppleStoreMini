@@ -7,7 +7,10 @@
         "orders": "Đơn hàng",
         "users": "Người dùng",
         "reviews": "Đánh giá",
-        "settings": "Cài đặt"
+        "settings": "Cài đặt",
+        "coupons": "Khuyến mãi",
+        "categories": "Danh mục",
+        "news": "Tin tức"
     },
 
     "dashboard": {
@@ -77,7 +80,13 @@
         "deleteFailed": "Xoá sản phẩm thất bại",
         "deleteConfirm": "Bạn có chắc muốn xoá sản phẩm này không?",
         "totalProducts": "Tổng sản phẩm",
-        "soldCount": "Đã bán"
+        "soldCount": "Đã bán",
+        "stock": "Tồn kho",
+        "outOfStock": "Hết hàng",
+        "inStockNote": "Tự động theo tồn kho",
+        "basicInfo": "Thông tin cơ bản",
+        "preview": "Xem trang",
+        "stockPlaceholder": "Số lượng tồn kho"
     },
 
     "order": {
@@ -150,5 +159,69 @@
         "actions": "Thao tác",
         "rowsPerPage": "Hàng mỗi trang",
         "of": "trong"
+    },
+    "coupon": {
+        "title": "Quản lý khuyến mãi",
+        "addNew": "Thêm mã mới",
+        "code": "Mã giảm giá",
+        "description": "Mô tả",
+        "discountType": "Loại giảm",
+        "discountValue": "Giá trị giảm",
+        "maxDiscount": "Giảm tối đa",
+        "minOrder": "Đơn tối thiểu",
+        "maxUsage": "Số lượt dùng",
+        "expiresAt": "Ngày hết hạn",
+        "usedCount": "Đã dùng",
+        "status": "Trạng thái",
+        "active": "Đang hoạt động",
+        "inactive": "Tắt",
+        "expired": "Hết hạn",
+        "usedUp": "Hết lượt",
+        "typePercent": "Phần trăm",
+        "typeFixed": "Số tiền",
+        "createSuccess": "Đã tạo mã giảm giá",
+        "updateSuccess": "Đã cập nhật mã giảm giá",
+        "deleteSuccess": "Đã xóa mã giảm giá",
+        "deleteConfirm": "Bạn có chắc muốn xóa mã này?"
+    },
+
+    "category": {
+        "title": "Quản lý danh mục",
+        "addNew": "Thêm danh mục",
+        "name": "Tên danh mục",
+        "slug": "Slug",
+        "description": "Mô tả",
+        "productCount": "Số sản phẩm",
+        "status": "Trạng thái",
+        "visible": "Hiển thị",
+        "hidden": "Đã ẩn",
+        "createSuccess": "Đã tạo danh mục",
+        "updateSuccess": "Đã cập nhật danh mục",
+        "deleteSuccess": "Đã xóa danh mục",
+        "deleteConfirm": "Danh mục có sản phẩm sẽ không thể xóa. Bạn có chắc không?"
+    },
+
+    "news": {
+        "title": "Quản lý tin tức",
+        "addNew": "Thêm bài viết",
+        "edit": "Chỉnh sửa bài viết",
+        "create": "Tạo bài viết mới",
+        "search": "Tìm bài viết...",
+        "articleTitle": "Tiêu đề",
+        "slug": "Slug",
+        "excerpt": "Tóm tắt",
+        "thumbnail": "Ảnh thumbnail",
+        "content": "Nội dung",
+        "category": "Danh mục",
+        "author": "Tác giả",
+        "readTime": "Thời gian đọc (phút)",
+        "published": "Đã xuất bản",
+        "draft": "Bản nháp",
+        "publish": "Xuất bản",
+        "unpublish": "Ẩn bài viết",
+        "createSuccess": "Đã tạo bài viết",
+        "updateSuccess": "Đã cập nhật bài viết",
+        "deleteSuccess": "Đã xóa bài viết",
+        "deleteConfirm": "Bạn có chắc muốn xóa bài viết này?"
     }
 }

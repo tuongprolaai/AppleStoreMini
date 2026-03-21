@@ -49,8 +49,8 @@ export default function RecentOrders() {
         <div className="space-y-1">
             {orders.map((order) => (
                 <Link
-                    key={order.id}
-                    to={ROUTES.ADMIN_ORDER_DETAIL(order.id)}
+                    key={order._id || order.id}
+                    to={ROUTES.ADMIN_ORDER_DETAIL(order._id || order.id)}
                     className="flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-muted/50"
                 >
                     {/* Avatar placeholder */}

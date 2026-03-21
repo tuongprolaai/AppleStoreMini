@@ -1,10 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ChevronLeft } from "lucide-react";
-
-// ✅ Import custom hook thần thánh của chúng ta
+import { ChevronLeft, ShoppingCart } from "lucide-react";
 import { useCheckout } from "@/features/checkout/hooks/useCheckout";
-
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import EmptyState from "@/components/shared/EmptyState";
@@ -14,13 +11,13 @@ import AddressStep from "@/features/checkout/components/AddressStep";
 import PaymentStep from "@/features/checkout/components/PaymentStep";
 import ConfirmStep from "@/features/checkout/components/ConfirmStep";
 import OrderSuccess from "@/features/checkout/components/OrderSuccess";
+import CouponInput from "@/features/checkout/components/CouponInput";
 import { formatPrice } from "@/lib/utils";
 import { ROUTES } from "@/lib/constants";
 
 export default function CheckoutPage() {
     const { t } = useTranslation("checkout");
 
-    // ✅ Gọi hook và lấy ra tất cả state/actions cần thiết
     const {
         currentStep,
         isSuccess,
@@ -29,20 +26,23 @@ export default function CheckoutPage() {
         items,
         total,
         shippingFee,
+        discountAmount,
         grandTotal,
         isLoading,
+        appliedCoupon,
         handleAddressNext,
         handlePaymentNext,
         handlePlaceOrder,
+        handleApplyCoupon,
+        handleRemoveCoupon,
         goBack,
     } = useCheckout();
 
-    // ── Empty cart ─────────────────────────────────────
     if (items.length === 0 && !isSuccess) {
         return (
             <div className="flex min-h-[60vh] items-center justify-center">
                 <EmptyState
-                    icon="🛒"
+                    icon={ShoppingCart}
                     title={t("cart.empty", { ns: "cart" })}
                     description={t("cart.emptyDesc", { ns: "cart" })}
                     actionLabel={t("btn.continueShopping", { ns: "common" })}
@@ -52,7 +52,6 @@ export default function CheckoutPage() {
         );
     }
 
-    // ── Success ────────────────────────────────────────
     if (isSuccess && createdOrder) {
         return <OrderSuccess order={createdOrder} />;
     }
@@ -88,7 +87,7 @@ export default function CheckoutPage() {
                         <PaymentStep
                             defaultData={checkoutData}
                             onNext={handlePaymentNext}
-                            onBack={goBack} // ✅ Dùng hàm goBack từ hook
+                            onBack={goBack}
                         />
                     )}
                     {currentStep === 2 && (
@@ -97,9 +96,10 @@ export default function CheckoutPage() {
                             items={items}
                             total={total}
                             shippingFee={shippingFee}
+                            discountAmount={discountAmount}
                             grandTotal={grandTotal}
                             onPlaceOrder={handlePlaceOrder}
-                            onBack={goBack} // ✅ Dùng hàm goBack từ hook
+                            onBack={goBack}
                             isLoading={isLoading}
                         />
                     )}
@@ -114,53 +114,68 @@ export default function CheckoutPage() {
 
                         {/* Items */}
                         <div className="mb-4 max-h-60 space-y-3 overflow-y-auto">
-                            {items.map((item, index) => (
-                                <div key={index} className="flex gap-3">
-                                    <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted/30 p-1">
-                                        <img
-                                            src={
-                                                item.product.images?.[0] ||
-                                                item.product.image
-                                            }
-                                            alt={item.product.name}
-                                            className="h-full w-full object-contain"
-                                        />
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                        <p className="truncate text-xs font-medium text-foreground">
-                                            {item.product.name}
-                                        </p>
-                                        <p className="text-xs text-muted-foreground">
-                                            {item.selectedColor && (
-                                                <span>
-                                                    {item.selectedColor}
-                                                </span>
-                                            )}
-                                            {item.selectedStorage && (
-                                                <span>
-                                                    {" "}
-                                                    · {item.selectedStorage}
-                                                </span>
-                                            )}
-                                        </p>
-                                        <div className="mt-0.5 flex items-center justify-between">
-                                            <span className="text-xs text-muted-foreground">
-                                                x{item.quantity}
-                                            </span>
-                                            <span className="text-xs font-medium">
-                                                {formatPrice(
-                                                    (item.product.salePrice &&
-                                                    item.product.salePrice <
-                                                        item.product.price
-                                                        ? item.product.salePrice
-                                                        : item.product.price) *
-                                                        item.quantity,
+                            {items.map((item, index) => {
+                                const effectivePrice =
+                                    item.product.salePrice &&
+                                    item.product.salePrice < item.product.price
+                                        ? item.product.salePrice
+                                        : item.product.price;
+                                return (
+                                    <div key={index} className="flex gap-3">
+                                        <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-muted/30 p-1">
+                                            <img
+                                                src={
+                                                    item.product.images?.[0] ||
+                                                    item.product.image
+                                                }
+                                                alt={item.product.name}
+                                                className="h-full w-full object-contain"
+                                            />
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="truncate text-xs font-medium text-foreground">
+                                                {item.product.name}
+                                            </p>
+                                            <p className="text-xs text-muted-foreground">
+                                                {item.selectedColor && (
+                                                    <span>
+                                                        {item.selectedColor}
+                                                    </span>
                                                 )}
-                                            </span>
+                                                {item.selectedStorage && (
+                                                    <span>
+                                                        {" "}
+                                                        · {item.selectedStorage}
+                                                    </span>
+                                                )}
+                                            </p>
+                                            <div className="mt-0.5 flex items-center justify-between">
+                                                <span className="text-xs text-muted-foreground">
+                                                    x{item.quantity}
+                                                </span>
+                                                <span className="text-xs font-medium">
+                                                    {formatPrice(
+                                                        effectivePrice *
+                                                            item.quantity,
+                                                    )}
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
+                        </div>
+
+                        <Separator className="mb-4" />
+
+                        {/* Coupon input */}
+                        <div className="mb-4">
+                            <CouponInput
+                                orderTotal={total}
+                                appliedCoupon={appliedCoupon}
+                                onApply={handleApplyCoupon}
+                                onRemove={handleRemoveCoupon}
+                            />
                         </div>
 
                         <Separator className="mb-4" />
@@ -189,6 +204,21 @@ export default function CheckoutPage() {
                                         : formatPrice(shippingFee)}
                                 </span>
                             </div>
+
+                            {/* Discount row — chỉ hiện khi có coupon */}
+                            {discountAmount > 0 && (
+                                <div className="flex justify-between text-green-600 dark:text-green-400">
+                                    <span>
+                                        {t("confirm.discount", {
+                                            defaultValue: "Giảm giá",
+                                        })}{" "}
+                                        <code className="text-xs">
+                                            ({appliedCoupon?.code})
+                                        </code>
+                                    </span>
+                                    <span>-{formatPrice(discountAmount)}</span>
+                                </div>
+                            )}
                         </div>
 
                         <Separator className="my-4" />

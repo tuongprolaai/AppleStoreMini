@@ -14,6 +14,8 @@ import { ROUTES } from "@/lib/constants";
 
 import productPlaceholder from "@/assets/images/placeholder/product-placeholder.jpg";
 
+const LOW_STOCK_THRESHOLD = 5;
+
 export default function ProductCard({ product }) {
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -30,8 +32,17 @@ export default function ProductCard({ product }) {
 
     const discount = calcDiscount(product.originalPrice, effectivePrice);
 
+    const stock = product.stock ?? null;
+    const isOutOfStock = !product.inStock || stock === 0;
+    const isLowStock =
+        !isOutOfStock &&
+        stock !== null &&
+        stock > 0 &&
+        stock <= LOW_STOCK_THRESHOLD;
+
     const handleAddToCart = (e) => {
         e.preventDefault();
+        if (isOutOfStock) return;
         dispatch(
             addToCart({
                 product,
@@ -62,12 +73,12 @@ export default function ProductCard({ product }) {
                 >
                     {/* Badges */}
                     <div className="absolute left-3 top-3 z-10 flex flex-col gap-1">
-                        {product.isNew && (
+                        {product.isNew && !isOutOfStock && (
                             <Badge variant="secondary" className="text-[10px]">
                                 {t("product.new")}
                             </Badge>
                         )}
-                        {discount > 0 && (
+                        {discount > 0 && !isOutOfStock && (
                             <Badge
                                 variant="destructive"
                                 className="text-[10px]"
@@ -75,9 +86,20 @@ export default function ProductCard({ product }) {
                                 -{discount}%
                             </Badge>
                         )}
-                        {!product.inStock && (
-                            <Badge variant="outline" className="text-[10px]">
+                        {isOutOfStock && (
+                            <Badge
+                                variant="outline"
+                                className="border-red-200 bg-red-50 text-[10px] text-red-600 dark:border-red-800 dark:bg-red-950/30 dark:text-red-400"
+                            >
                                 {t("product.outOfStock")}
+                            </Badge>
+                        )}
+                        {isLowStock && (
+                            <Badge className="bg-amber-100 text-[10px] text-amber-700 hover:bg-amber-100 dark:bg-amber-950/30 dark:text-amber-400">
+                                {t("product.lowStock", {
+                                    defaultValue: "Còn {{count}} sản phẩm",
+                                    count: stock,
+                                })}
                             </Badge>
                         )}
                     </div>
@@ -98,6 +120,11 @@ export default function ProductCard({ product }) {
                         />
                     </button>
 
+                    {/* Overlay mờ khi hết hàng */}
+                    {isOutOfStock && (
+                        <div className="absolute inset-0 z-[5] bg-background/50 backdrop-blur-[1px]" />
+                    )}
+
                     {/* Product image */}
                     <img
                         src={
@@ -106,7 +133,11 @@ export default function ProductCard({ product }) {
                             productPlaceholder
                         }
                         alt={product.name}
-                        className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
+                        className={cn(
+                            "h-full w-full object-contain transition-transform duration-500",
+                            !isOutOfStock && "group-hover:scale-105",
+                            isOutOfStock && "opacity-60",
+                        )}
                         loading="lazy"
                         onError={(e) => {
                             e.currentTarget.src = productPlaceholder;
@@ -129,30 +160,41 @@ export default function ProductCard({ product }) {
 
                 {/* Price */}
                 <div className="mt-1.5 flex items-center justify-center gap-1.5">
-                    <span className="text-sm font-semibold text-foreground">
-                        {formatPrice(effectivePrice)}
-                    </span>
-                    {product.originalPrice &&
-                        product.originalPrice > effectivePrice && (
-                            <span className="text-xs text-muted-foreground line-through">
-                                {formatPrice(product.originalPrice)}
+                    {isOutOfStock ? (
+                        <span className="text-xs text-muted-foreground">
+                            {t("product.contactToOrder", {
+                                defaultValue: "Liên hệ để đặt hàng",
+                            })}
+                        </span>
+                    ) : (
+                        <>
+                            <span className="text-sm font-semibold text-foreground">
+                                {formatPrice(effectivePrice)}
                             </span>
-                        )}
+                            {product.originalPrice &&
+                                product.originalPrice > effectivePrice && (
+                                    <span className="text-xs text-muted-foreground line-through">
+                                        {formatPrice(product.originalPrice)}
+                                    </span>
+                                )}
+                        </>
+                    )}
                 </div>
             </CardContent>
 
             {/* Footer */}
-            <CardFooter className="justify-center p-3 pt-0">
+            <CardFooter className="justify-center p-3">
                 <Button
                     size="sm"
+                    variant={isOutOfStock ? "outline" : "default"}
                     onClick={handleAddToCart}
-                    disabled={!product.inStock}
+                    disabled={isOutOfStock}
                     className="h-8 w-full gap-1.5 rounded-full text-xs transition-transform active:scale-95"
                 >
                     <ShoppingCart className="h-3.5 w-3.5" />
-                    {product.inStock
-                        ? t("btn.addToCart")
-                        : t("product.outOfStock")}
+                    {isOutOfStock
+                        ? t("product.outOfStock")
+                        : t("btn.addToCart")}
                 </Button>
             </CardFooter>
         </Card>

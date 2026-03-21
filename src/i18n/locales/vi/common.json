@@ -19,7 +19,9 @@
         "logout": "Đăng xuất",
         "login": "Đăng nhập",
         "register": "Đăng ký",
-        "admin": "Quản trị"
+        "admin": "Quản trị",
+        "news": "Tin tức",
+        "explore": "Khám phá"
     },
 
     "btn": {
@@ -93,7 +95,9 @@
         "quantity": "Số lượng",
         "sku": "Mã sản phẩm",
         "review": "đánh giá",
-        "noReview": "Chưa có đánh giá"
+        "noReview": "Chưa có đánh giá",
+        "lowStock": "Còn {{count}} sản phẩm",
+        "contactToOrder": "Liên hệ để đặt hàng"
     },
 
     "empty": {
@@ -150,7 +154,8 @@
         "privacy": "Chính sách bảo mật",
         "terms": "Điều khoản sử dụng",
         "copyright": "© 2024 Apple Store. Bảo lưu mọi quyền.",
-        "followUs": "Theo dõi chúng tôi"
+        "followUs": "Theo dõi chúng tôi",
+        "explore": "Khám phá"
     },
 
     "error": {

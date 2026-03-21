@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner"; // ✅ Đổi sang thư viện sonner
+import { toast } from "sonner";
 import { useCreateOrderMutation } from "@/store/api/ordersApi";
 import { selectCartItems, selectCartTotal, clearCart } from "@/store/cartSlice";
 import { ROUTES, SHIPPING } from "@/lib/constants";
@@ -10,7 +9,6 @@ import { ROUTES, SHIPPING } from "@/lib/constants";
 export function useCheckout() {
     const { t } = useTranslation("checkout");
     const dispatch = useDispatch();
-    const navigate = useNavigate();
 
     const items = useSelector(selectCartItems);
     const total = useSelector(selectCartTotal);
@@ -25,13 +23,19 @@ export function useCheckout() {
         note: "",
     });
 
+    // ── Coupon state ───────────────────────────────────
+    const [appliedCoupon, setAppliedCoupon] = useState(null);
+    // appliedCoupon shape: { code, discountAmount, description }
+
     const [createOrder, { isLoading }] = useCreateOrderMutation();
 
     // ── Computed ───────────────────────────────────────
     const shippingFee =
         total >= SHIPPING.FREE_THRESHOLD ? 0 : SHIPPING.DEFAULT_FEE;
 
-    const grandTotal = total + shippingFee;
+    const discountAmount = appliedCoupon?.discountAmount ?? 0;
+
+    const grandTotal = Math.max(0, total + shippingFee - discountAmount);
 
     const canProceed = items.length > 0;
 
@@ -49,15 +53,21 @@ export function useCheckout() {
         goNext();
     };
 
+    // ── Coupon handlers ────────────────────────────────
+    const handleApplyCoupon = (couponData) => {
+        setAppliedCoupon(couponData);
+    };
+
+    const handleRemoveCoupon = () => {
+        setAppliedCoupon(null);
+    };
+
     // ── Place order ────────────────────────────────────
     const handlePlaceOrder = async () => {
-        // 1. Bảo vệ: Chặn giỏ hàng trống
         if (items.length === 0) {
             toast.error(t("error.emptyCart"));
             return;
         }
-
-        // 2. Bảo vệ: Chặn thiếu phương thức thanh toán
         if (!checkoutData.paymentMethod) {
             toast.error(t("error.placeOrderFailed"));
             return;
@@ -68,6 +78,7 @@ export function useCheckout() {
                 addressId: checkoutData.addressId,
                 paymentMethod: checkoutData.paymentMethod,
                 note: checkoutData.note,
+                couponCode: appliedCoupon?.code || undefined,
                 items: items.map((item) => ({
                     productId: item.product._id || item.product.id,
                     quantity: item.quantity,
@@ -79,11 +90,8 @@ export function useCheckout() {
             setCreatedOrder(response.data);
             dispatch(clearCart());
             setIsSuccess(true);
-
-            // ✅ Thêm thông báo thành công cho mượt
             toast.success(t("success.placeOrder"));
         } catch (error) {
-            // ✅ Sử dụng sonner cho thông báo lỗi
             toast.error(t("error.placeOrderFailed"), {
                 description: error?.data?.message,
             });
@@ -95,6 +103,7 @@ export function useCheckout() {
         setCurrentStep(0);
         setIsSuccess(false);
         setCreatedOrder(null);
+        setAppliedCoupon(null);
         setCheckoutData({
             addressId: null,
             address: null,
@@ -104,7 +113,6 @@ export function useCheckout() {
     };
 
     return {
-        // State
         currentStep,
         isSuccess,
         createdOrder,
@@ -112,14 +120,16 @@ export function useCheckout() {
         items,
         total,
         shippingFee,
+        discountAmount,
         grandTotal,
         canProceed,
         isLoading,
-
-        // Actions
+        appliedCoupon,
         handleAddressNext,
         handlePaymentNext,
         handlePlaceOrder,
+        handleApplyCoupon,
+        handleRemoveCoupon,
         goBack,
         reset,
     };

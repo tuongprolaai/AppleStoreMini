@@ -21,6 +21,7 @@ export const reviewsApi = baseApi.injectEndpoints({
             invalidatesTags: (_, __, { productId }) => [
                 { type: "Reviews", id: productId },
                 "Products",
+                "Orders",
             ],
         }),
 
@@ -56,11 +57,25 @@ export const reviewsApi = baseApi.injectEndpoints({
         checkPurchased: builder.query({
             query: (productId) => `/reviews/${productId}/check-purchased`,
         }),
+
+        getAllReviews: builder.query({
+            query: (params) => ({ url: "/admin/reviews", params }),
+            providesTags: ["Reviews"],
+        }),
+        toggleReviewVisibility: builder.mutation({
+            query: (reviewId) => ({
+                url: `/admin/reviews/${reviewId}/visibility`,
+                method: "PATCH",
+            }),
+            invalidatesTags: ["Reviews"],
+        }),
     }),
 });
 
 export const {
     useGetReviewsQuery,
+    useToggleReviewVisibilityMutation,
+    useGetAllReviewsQuery,
     useCreateReviewMutation,
     useUpdateReviewMutation,
     useDeleteReviewMutation,

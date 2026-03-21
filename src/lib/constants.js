@@ -23,6 +23,7 @@ export const ROUTES = {
 
     // Admin
     ADMIN: "/admin",
+    ADMIN_LOGIN: "/admin/login",
     ADMIN_DASHBOARD: "/admin/dashboard",
     ADMIN_PRODUCTS: "/admin/products",
     ADMIN_PRODUCT_CREATE: "/admin/products/create",

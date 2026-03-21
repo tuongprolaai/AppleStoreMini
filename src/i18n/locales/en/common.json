@@ -19,7 +19,9 @@
         "logout": "Log out",
         "login": "Log in",
         "register": "Sign up",
-        "admin": "Admin"
+        "admin": "Admin",
+        "news": "News",
+        "explore": "Explore"
     },
 
     "btn": {
@@ -93,7 +95,9 @@
         "quantity": "Quantity",
         "sku": "SKU",
         "review": "reviews",
-        "noReview": "No reviews yet"
+        "noReview": "No reviews yet",
+        "lowStock": "Only {{count}} left",
+        "contactToOrder": "Contact to order"
     },
 
     "empty": {
@@ -150,7 +154,8 @@
         "privacy": "Privacy policy",
         "terms": "Terms of use",
         "copyright": "© 2024 Apple Store. All rights reserved.",
-        "followUs": "Follow us"
+        "followUs": "Follow us",
+        "explore": "Explore"
     },
 
     "error": {

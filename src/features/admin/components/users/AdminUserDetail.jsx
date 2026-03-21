@@ -100,7 +100,7 @@ export default function AdminUserDetail({ user, orders = [] }) {
                 {/* Stats */}
                 <div className="rounded-2xl border border-border bg-card p-5">
                     <h3 className="mb-4 text-sm font-medium text-foreground">
-                        Thống kê
+                        {t("user.stats")}
                     </h3>
                     <div className="space-y-3">
                         <div className="flex items-center justify-between text-sm">
@@ -160,8 +160,10 @@ export default function AdminUserDetail({ user, orders = [] }) {
                         <div className="space-y-1">
                             {orders.map((order) => (
                                 <Link
-                                    key={order.id}
-                                    to={ROUTES.ADMIN_ORDER_DETAIL(order.id)}
+                                    key={order._id || order.id}
+                                    to={ROUTES.ADMIN_ORDER_DETAIL(
+                                        order._id || order.id,
+                                    )}
                                     className="flex items-center gap-4 rounded-xl p-3 transition-colors hover:bg-muted/50"
                                 >
                                     <div className="min-w-0 flex-1">
@@ -210,7 +212,7 @@ export default function AdminUserDetail({ user, orders = [] }) {
                         <div className="space-y-3">
                             {user.addresses.map((addr) => (
                                 <div
-                                    key={addr.id}
+                                    key={addr._id || addr.id}
                                     className="rounded-xl border border-border p-3"
                                 >
                                     <p className="text-sm font-medium text-foreground">

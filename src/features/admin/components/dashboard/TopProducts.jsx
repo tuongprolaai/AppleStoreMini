@@ -66,8 +66,8 @@ export default function TopProducts() {
             {/* Rows */}
             {products.map((product, index) => (
                 <Link
-                    key={product.id}
-                    to={ROUTES.ADMIN_PRODUCT_EDIT(product.id)}
+                    key={product._id || product.id}
+                    to={ROUTES.ADMIN_PRODUCT_EDIT(product._id || product.id)}
                     className="grid grid-cols-12 items-center gap-4 rounded-xl px-2 py-2.5 transition-colors hover:bg-muted/50"
                 >
                     {/* Rank */}

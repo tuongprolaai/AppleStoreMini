@@ -94,5 +94,10 @@
         "totalAmount": "Tổng tiền",
         "search": "Tìm kiếm đơn hàng...",
         "filterStatus": "Lọc theo trạng thái"
+    },
+    "review": {
+        "pending": "Chờ đánh giá:",
+        "unblock": "Bỏ chặn",
+        "block": "Chặn"
     }
 }
