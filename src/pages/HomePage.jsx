@@ -37,7 +37,7 @@ import ipadImg from "@/assets/images/categories/ipad.jpg";
 import macImg from "@/assets/images/categories/mac.jpg";
 import watchImg from "@/assets/images/categories/watch.jpg";
 import airpodsImg from "@/assets/images/categories/airpods.jpg";
-import { useGetAllBannersQuery } from "@/store/api/bannersApi";
+import { useGetBannersQuery } from "@/store/api/bannersApi";
 
 const CATEGORY_IMAGES = {
     iphone: iphoneImg,
@@ -85,21 +85,24 @@ export default function HomePage() {
     });
 
     const { data: bannerData, isLoading: isBannerLoading } =
-        useGetAllBannersQuery();
+        useGetBannersQuery();
 
     const banners =
-        bannerData?.data?.map((item) => ({
-            id: item._id, // ✅ FIX
-            title: item.title,
-            subtitle: item.subtitle,
-            description: item.description,
-            cta: item.ctaText, // ✅ FIX
-            ctaLink: item.ctaLink,
-            image: item.image, // ✅ OK
-            bgFrom: item.bgFrom,
-            bgTo: item.bgTo,
-            textColor: item.textColor,
-        })) || [];
+        bannerData?.data
+            ?.filter((item) => item.isActive)
+            ?.sort((a, b) => a.order - b.order)
+            ?.map((item) => ({
+                id: item._id,
+                title: item.title,
+                subtitle: item.subtitle,
+                description: item.description,
+                image: item.image,
+                textColor: item.textColor,
+                bgFrom: item.bgFrom,
+                bgTo: item.bgTo,
+                cta: item.ctaText,
+                ctaLink: item.ctaLink,
+            })) || [];
 
     const featuredProducts = featuredData?.data ?? [];
     const newProducts = newData?.data ?? [];

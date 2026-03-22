@@ -19,47 +19,56 @@ export default function BannerSlider({ slides = [] }) {
                 autoplay={{ delay: 5000, disableOnInteraction: false }}
                 pagination={{ clickable: true }}
                 loop
-                style={{ minHeight: "580px" }}
-                className="banner-swiper w-full"
+                className="w-full"
             >
                 {slides.map((slide) => {
                     const light = slide.textColor === "light";
 
                     return (
                         <SwiperSlide key={slide.id}>
-                            <div
-                                className="relative flex min-h-[580px] w-full items-center overflow-hidden"
-                                style={{
-                                    background: `linear-gradient(135deg, ${slide.bgFrom} 0%, ${slide.bgTo} 100%)`,
-                                }}
-                            >
-                                {/* Subtle bg image overlay */}
-                                {slide.image && (
+                            <div className="relative h-[580px] w-full overflow-hidden">
+                                {/* Background */}
+                                {slide.image ? (
                                     <img
                                         src={slide.image}
-                                        alt=""
-                                        aria-hidden
-                                        className="absolute inset-0 h-full w-full object-cover opacity-10"
+                                        alt={slide.title}
+                                        className="absolute inset-0 h-full w-full object-cover"
+                                    />
+                                ) : (
+                                    <div
+                                        className="absolute inset-0"
+                                        style={{
+                                            background: `linear-gradient(135deg, ${slide.bgFrom}, ${slide.bgTo})`,
+                                        }}
                                     />
                                 )}
 
+                                {/* Overlay (luôn có để đọc chữ rõ hơn) */}
+                                <div
+                                    className="absolute inset-0"
+                                    style={{
+                                        background: light
+                                            ? "linear-gradient(90deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0) 100%)"
+                                            : "linear-gradient(90deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)",
+                                    }}
+                                />
+
                                 {/* Content */}
-                                <div className="section-padding relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center gap-8 py-16 text-center md:flex-row md:items-center md:gap-16 md:text-left">
-                                    {/* Text block */}
-                                    <div className="flex-1">
+                                <div className="relative z-10 mx-auto flex h-full max-w-7xl items-center px-6">
+                                    <div className="max-w-xl">
                                         <p
                                             className="mb-3 text-xs font-semibold uppercase tracking-widest"
                                             style={{
                                                 color: light
-                                                    ? "rgba(255,255,255,0.55)"
-                                                    : "rgba(0,0,0,0.4)",
+                                                    ? "rgba(255,255,255,0.7)"
+                                                    : "rgba(0,0,0,0.5)",
                                             }}
                                         >
                                             Apple Store Vietnam
                                         </p>
 
                                         <h1
-                                            className="mb-4 text-5xl font-semibold tracking-tight md:text-6xl lg:text-7xl"
+                                            className="mb-4 text-5xl font-semibold md:text-6xl lg:text-7xl"
                                             style={{
                                                 color: light
                                                     ? "#ffffff"
@@ -70,10 +79,10 @@ export default function BannerSlider({ slides = [] }) {
                                         </h1>
 
                                         <p
-                                            className="mb-3 text-lg font-medium md:text-xl"
+                                            className="mb-3 text-lg md:text-xl"
                                             style={{
                                                 color: light
-                                                    ? "rgba(255,255,255,0.85)"
+                                                    ? "rgba(255,255,255,0.9)"
                                                     : "rgba(0,0,0,0.7)",
                                             }}
                                         >
@@ -81,21 +90,20 @@ export default function BannerSlider({ slides = [] }) {
                                         </p>
 
                                         <p
-                                            className="mb-8 max-w-sm text-sm leading-relaxed"
+                                            className="mb-8 text-sm"
                                             style={{
                                                 color: light
-                                                    ? "rgba(255,255,255,0.6)"
+                                                    ? "rgba(255,255,255,0.7)"
                                                     : "rgba(0,0,0,0.5)",
                                             }}
                                         >
                                             {slide.description}
                                         </p>
 
-                                        <div className="flex flex-wrap items-center justify-center gap-3 md:justify-start">
-                                            {/* Primary CTA */}
+                                        <div className="flex gap-3">
                                             <Link
                                                 to={slide.ctaLink}
-                                                className="inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
+                                                className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-medium transition hover:opacity-90"
                                                 style={{
                                                     background: light
                                                         ? "#ffffff"
@@ -109,13 +117,12 @@ export default function BannerSlider({ slides = [] }) {
                                                 <ArrowRight className="h-4 w-4" />
                                             </Link>
 
-                                            {/* Secondary CTA */}
                                             <Link
                                                 to={ROUTES.PRODUCTS}
-                                                className="inline-flex items-center rounded-full border px-7 py-3 text-sm font-medium transition-all hover:opacity-80"
+                                                className="rounded-full border px-6 py-3 text-sm font-medium transition hover:opacity-80"
                                                 style={{
                                                     borderColor: light
-                                                        ? "rgba(255,255,255,0.35)"
+                                                        ? "rgba(255,255,255,0.4)"
                                                         : "rgba(0,0,0,0.2)",
                                                     color: light
                                                         ? "#ffffff"
@@ -126,17 +133,6 @@ export default function BannerSlider({ slides = [] }) {
                                             </Link>
                                         </div>
                                     </div>
-
-                                    {/* Hero product image */}
-                                    {slide.image && (
-                                        <div className="hidden flex-1 items-center justify-center md:flex">
-                                            <img
-                                                src={slide.image}
-                                                alt={slide.title}
-                                                className="max-h-[400px] w-auto object-contain drop-shadow-2xl"
-                                            />
-                                        </div>
-                                    )}
                                 </div>
                             </div>
                         </SwiperSlide>
