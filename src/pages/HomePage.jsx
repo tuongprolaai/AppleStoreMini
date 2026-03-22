@@ -37,6 +37,7 @@ import ipadImg from "@/assets/images/categories/ipad.jpg";
 import macImg from "@/assets/images/categories/mac.jpg";
 import watchImg from "@/assets/images/categories/watch.jpg";
 import airpodsImg from "@/assets/images/categories/airpods.jpg";
+import { useGetAllBannersQuery } from "@/store/api/bannersApi";
 
 const CATEGORY_IMAGES = {
     iphone: iphoneImg,
@@ -83,6 +84,23 @@ export default function HomePage() {
         limit: 12,
     });
 
+    const { data: bannerData, isLoading: isBannerLoading } =
+        useGetAllBannersQuery();
+
+    const banners =
+        bannerData?.data?.map((item) => ({
+            id: item._id, // ✅ FIX
+            title: item.title,
+            subtitle: item.subtitle,
+            description: item.description,
+            cta: item.ctaText, // ✅ FIX
+            ctaLink: item.ctaLink,
+            image: item.image, // ✅ OK
+            bgFrom: item.bgFrom,
+            bgTo: item.bgTo,
+            textColor: item.textColor,
+        })) || [];
+
     const featuredProducts = featuredData?.data ?? [];
     const newProducts = newData?.data ?? [];
     const saleProducts = saleData?.data?.products ?? saleData?.data ?? [];
@@ -90,7 +108,7 @@ export default function HomePage() {
     return (
         <div className="flex flex-col">
             {/* ── 1. Hero Banner Slider ── */}
-            <BannerSlider slides={BANNER_SLIDES} />
+            <BannerSlider slides={banners} isLoading={isBannerLoading} />
 
             {/* ── 2. Category Bar ── */}
             <section className="section-padding border-b border-border bg-muted/20 py-8">

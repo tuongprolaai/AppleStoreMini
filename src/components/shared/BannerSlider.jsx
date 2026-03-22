@@ -8,14 +8,6 @@ import "swiper/css/effect-fade";
 
 import { ROUTES } from "@/lib/constants";
 
-/**
- * BannerSlider — hero banner toàn màn hình với EffectFade + autoplay
- *
- * Props:
- *   slides — array từ BANNER_SLIDES trong constants.js
- *            mỗi slide: { id, title, subtitle, description, cta, ctaLink,
- *                         image, bgFrom, bgTo, textColor: "light"|"dark" }
- */
 export default function BannerSlider({ slides = [] }) {
     if (!slides.length) return null;
 

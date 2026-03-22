@@ -12,6 +12,11 @@ import {
     X,
     ChevronRight,
     Store,
+    MessageSquare,
+    Tag,
+    LayoutGrid,
+    Newspaper,
+    FileSliders,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -22,7 +27,6 @@ import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/lib/constants";
 import { logout, selectCurrentUser } from "@/store/authSlice";
-import { MessageSquare, Tag, LayoutGrid, Newspaper } from "lucide-react";
 
 const NAV_ITEMS = [
     {
@@ -48,6 +52,7 @@ const NAV_ITEMS = [
         end: false,
     },
     { key: "news", href: "/admin/news", icon: Newspaper, end: false },
+    { key: "banners", href: "/admin/banners", icon: FileSliders, end: false },
 ];
 
 function SidebarContent({ onClose }) {
